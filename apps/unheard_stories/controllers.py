@@ -25,15 +25,20 @@ session, db, T, auth, and tempates are examples of Fixtures.
 Warning: Fixtures MUST be declared with @action.uses({fixtures}) else your app will result in undefined behavior
 """
 
-from py4web import action, request, abort, redirect, URL
+import uuid
+
+from py4web import action, request, abort, redirect, URL, Field
+from py4web.utils.form import Form, FormStyleBulma
+from py4web.utils.url_signer import URLSigner
+
 from yatl.helpers import A
-from .common import db, session, T, cache, auth, logger, authenticated, unauthenticated, flash
+from . common import db, session, T as translate, cache, auth
 
+url_signer = URLSigner(session)
 
+# The homepage should be visible to everyone, even if they're not logged in.
 @action("index")
-@action.uses("index.html", auth, T)
+@action.uses("index.html", db)
 def index():
-    user = auth.get_user()
-    message = T("Hello {first_name}".format(**user) if user else "Hello")
-    actions = {"allowed_actions": auth.param.allowed_actions}
-    return dict(message=message, actions=actions)
+    stories = db(db.story).select(orderby=~db.story.id).as_list()
+    return dict(stories=stories)

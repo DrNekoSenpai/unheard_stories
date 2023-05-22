@@ -1,7 +1,51 @@
 [[extend 'layout.html']]
 
-<div class="section">
-  <div class="vars">
-      [[=message]]
+<!-- This is the homepage. It'll have: 
+- A scrollable feed showcasing various stories.
+- Navigation bar and search bar for easy navigation and story discovery.
+- Each story is displayed as a preview, similar to Reddit post previews.
+- Each story has a link to read the full story in more depth. -->
+
+<!-- The header section should contain the site's name, providing a visual identity for your blog site. Include a navigation bar with links to different sections of the site, such as Home, Stories, Submit a Story, and Login/Register. You can also include a search bar where users can search for specific stories. The header should be minimized when scrolling, but still visible. -->
+        
+<nav class="navbar" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a class="navbar-item">
+      <!-- Use the logo in images/logo.png. -->
+      <img src="../images/logo.png" width="150" height="50">
+    </a>
+
+    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample" href="/">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
   </div>
-</div>
+
+  <div id="navbarBasicExample" class="navbar-menu">
+    <div class="navbar-start"> 
+      <a class="navbar-item" href="/">
+        Home
+      </a>
+      <a class="navbar-item" href="/stories">
+        Stories
+      </a>
+      <a class="navbar-item" href="/submit">
+        Submit a Story
+      </a>
+    </div>
+  </div>
+
+  <div class="navbar-end">
+    <div class="navbar-item">
+      <div class="buttons">
+        <a class="button is-primary" href="/login">
+          <strong>Login</strong>
+        </a>
+        <a class="button is-light" href="/register">
+          Register
+        </a>
+      </div>
+    </div>
+  </div>
+</nav>
