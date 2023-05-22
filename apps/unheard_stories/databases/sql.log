@@ -1,0 +1,44 @@
+timestamp: 2023-05-21T23:21:26.475667
+CREATE TABLE "auth_user"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "username" CHAR(512) UNIQUE,
+    "email" CHAR(512) UNIQUE,
+    "password" CHAR(512),
+    "first_name" CHAR(512),
+    "last_name" CHAR(512),
+    "sso_id" CHAR(512),
+    "action_token" CHAR(512),
+    "last_password_change" TIMESTAMP,
+    "past_passwords_hash" TEXT
+);
+success!
+timestamp: 2023-05-21T23:21:26.526474
+CREATE TABLE "auth_user_tag_groups"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "tagpath" CHAR(512),
+    "record_id" INTEGER REFERENCES "auth_user" ("id") ON DELETE CASCADE ON UPDATE CASCADE  
+);
+success!
+timestamp: 2023-05-21T23:21:26.557362
+CREATE TABLE "story"(
+    "story_id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "title" CHAR(512),
+    "content" TEXT,
+    "author" CHAR(512),
+    "creation_date" TIMESTAMP,
+    "likes" INTEGER,
+    "dislikes" INTEGER,
+    "comments" TEXT
+);
+success!
+timestamp: 2023-05-21T23:21:26.573263
+CREATE TABLE "comment"(
+    "comment_id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "story_id" INTEGER REFERENCES "story" ("story_id") ON DELETE CASCADE ON UPDATE CASCADE  ,
+    "content" TEXT,
+    "author" CHAR(512),
+    "creation_date" TIMESTAMP,
+    "likes" INTEGER,
+    "dislikes" INTEGER
+);
+success!
