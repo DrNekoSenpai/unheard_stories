@@ -34,6 +34,11 @@ db.define_table(
 db.story.story_id.readable = db.story.story_id.writable = False
 db.story.creation_date.writable = False
 
+# We should be able to view likes, dislikes, and comments; but they shouldn't be editable. 
+db.story.likes.writable = False 
+db.story.dislikes.writable = False
+db.story.comments.writable = False
+
 # Translate the labels using the translate function
 db.story.title.label = translate('Title')
 db.story.content.label = translate('Content')
@@ -56,11 +61,17 @@ db.define_table(
     Field('creation_date', 'datetime', requires=IS_NOT_EMPTY()),
     Field('likes', 'integer', default=0),
     Field('dislikes', 'integer', default=0),
+    Field('replies', 'list:reference comment'),
 )
 
 # The comment ID and creation date will not be editable by the user.
 db.comment.comment_id.readable = db.comment.comment_id.writable = False
 db.comment.creation_date.writable = False
+
+# We should be able to view likes, dislikes, and other comments; but they shouldn't be editable.
+db.comment.likes.writable = False
+db.comment.dislikes.writable = False
+db.comment.replies.writable = False
 
 # Translate the labels using the translate function
 db.comment.story_id.label = translate('Story ID')

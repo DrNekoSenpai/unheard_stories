@@ -53,44 +53,44 @@ def add():
     # Either this is a GET request, or this is a POST but not accepted = with errors.
     return dict(form=form)
 
-@action('edit/<bird_id:int>', method=["GET", "POST"])
-@action.uses('edit.html', url_signer, db, session, auth.user)
-def edit(bird_id=None):
-    assert bird_id is not None
-    # We read the product being edited from the db.
-    # b = db(db.bird.id == bird_id).select().first()
-    b = db.bird[bird_id]
-    if b is None:
-        # Nothing found to be edited!
-        redirect(URL('index'))
-    # Edit form: it has record=
-    form = Form(db.bird, record=b, deletable=False, csrf_session=session, formstyle=FormStyleBulma)
-    if form.accepted:
-        # The update already happened!
-        redirect(URL('index'))
-    return dict(form=form)
+# @action('edit/<bird_id:int>', method=["GET", "POST"])
+# @action.uses('edit.html', url_signer, db, session, auth.user)
+# def edit(bird_id=None):
+#     assert bird_id is not None
+#     # We read the product being edited from the db.
+#     # b = db(db.bird.id == bird_id).select().first()
+#     b = db.bird[bird_id]
+#     if b is None:
+#         # Nothing found to be edited!
+#         redirect(URL('index'))
+#     # Edit form: it has record=
+#     form = Form(db.bird, record=b, deletable=False, csrf_session=session, formstyle=FormStyleBulma)
+#     if form.accepted:
+#         # The update already happened!
+#         redirect(URL('index'))
+#     return dict(form=form)
 
-@action('delete/<bird_id:int>')
-@action.uses(db, session, auth.user, url_signer.verify())
-def delete(bird_id=None):
-    assert bird_id is not None
-    db(db.bird.id == bird_id).delete()
-    redirect(URL('index'))
+# @action('delete/<bird_id:int>')
+# @action.uses(db, session, auth.user, url_signer.verify())
+# def delete(bird_id=None):
+#     assert bird_id is not None
+#     db(db.bird.id == bird_id).delete()
+#     redirect(URL('index'))
 
-@action('inc/<bird_id:int>')
-@action.uses(db, auth.user, url_signer.verify())
-def inc(bird_id=None):
-    assert bird_id is not None
-    bird = db.bird[bird_id]
-    db(db.bird.id == bird_id).update(n_sightings=bird.n_sightings + 1)
-    redirect(URL('index'))
+# @action('inc/<bird_id:int>')
+# @action.uses(db, auth.user, url_signer.verify())
+# def inc(bird_id=None):
+#     assert bird_id is not None
+#     bird = db.bird[bird_id]
+#     db(db.bird.id == bird_id).update(n_sightings=bird.n_sightings + 1)
+#     redirect(URL('index'))
 
-# This is an example only, to be used as inspiration for your code to increment the bird count.
-# Note that the bird_id parameter ...
-@action('capitalize/<bird_id:int>') # the :int means: please convert this to an int.
-@action.uses(db, auth.user, url_signer.verify())
-# ... has to match the bird_id parameter of the Python function here.
-def capitalize(bird_id=None):
-    assert bird_id is not None
-    bird = db.bird[bird_id]
-    db(db.bird.id == bird_id).update(bird_name=bird.bird_name.capitalize())
+# # This is an example only, to be used as inspiration for your code to increment the bird count.
+# # Note that the bird_id parameter ...
+# @action('capitalize/<bird_id:int>') # the :int means: please convert this to an int.
+# @action.uses(db, auth.user, url_signer.verify())
+# # ... has to match the bird_id parameter of the Python function here.
+# def capitalize(bird_id=None):
+#     assert bird_id is not None
+#     bird = db.bird[bird_id]
+#     db(db.bird.id == bird_id).update(bird_name=bird.bird_name.capitalize())
