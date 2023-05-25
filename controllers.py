@@ -44,8 +44,8 @@ def index():
     return dict(rows=rows, url_signer=url_signer)
 
 @action('submit', method=["GET", "POST"])
-@action.uses(db, session, auth.user, 'submit.html')
-def add():
+@action.uses(db, session, url_signer.verify(), auth.user, 'submit.html')
+def submit():
     form = Form(db.story, csrf_session=session, formstyle=FormStyleBulma)
     if form.accepted:
         # We simply redirect; the insertion already happened.
