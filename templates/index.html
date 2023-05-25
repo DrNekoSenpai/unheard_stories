@@ -1,6 +1,22 @@
 [[extend 'layout.html']]
 
 <div class="section">
+  <div class="title">Unheard Stories</div>
+  <div class="container">
+    <table class="table is-striped is-fullwidth">
+      [[for row in rows:]]
+      <td>[[=row.title]]</td>
+      <td>
+        <a
+          class="button is-success"
+          href="[[=URL('view', row.story_id, signer=url_signer)]]"
+        >
+          <span class="icon"><i class="fa fa-fw fa-pencil"></i></span>
+        </a>
+      </td>
+      [[pass]]
+    </table>
+  </div>
   <a class="button is-success" href="[[=URL('submit')]]">
     <span class="icon"><i class="fa fa-plus"></i></span>
     <span>Submit a story</span>

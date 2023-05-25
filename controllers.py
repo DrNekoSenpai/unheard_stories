@@ -44,7 +44,7 @@ def index():
     return dict(rows=rows, url_signer=url_signer)
 
 @action('submit', method=["GET", "POST"])
-@action.uses(db, session, url_signer.verify(), auth.user, 'submit.html')
+@action.uses(db, session, auth.user, 'submit.html')
 def submit():
     form = Form(db.story, csrf_session=session, formstyle=FormStyleBulma)
     if form.accepted:
@@ -52,6 +52,14 @@ def submit():
         redirect(URL('index'))
     # Either this is a GET request, or this is a POST but not accepted = with errors.
     return dict(form=form)
+
+# To do: make a view_story button and page
+@action('view/<story_id:int>')
+@action.uses(db, session, auth.user, 'view.html')
+def view(story_id = None):
+    assert story_id is not None
+    story = db(db.story.story_id == story_id).select()
+    return dict(story=story, url_signer=url_signer, story_id=story_id)
 
 # Dummy comment
 
