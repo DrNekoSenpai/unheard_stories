@@ -1,9 +1,15 @@
 [[extend 'layout.html']]
 
 <div class="section">
-  <div class="title is-2">[[=story.title]]</div>
-  <div class="subtitle is-6">
-    by [[=story.author]], Created on [[=story.creation_date]]
+  <div class="block">
+    <div class="title is-2">[[=story.title]]</div>
   </div>
-  <div class="box">[[=story.content]]</div>
+  <div class="block">
+    <div class="subtitle is-6">
+      by [[=story.author]], Created on [[=story.creation_date]]
+    </div>
+  </div>
+  <div class="block">
+    <div class="box">[[=story.content]]</div>
+  </div>
 </div>
