@@ -39,6 +39,8 @@ db.story.likes.writable = False
 db.story.dislikes.writable = False
 db.story.comments.writable = False
 
+# Dummy comment
+
 # Translate the labels using the translate function
 db.story.title.label = translate('Title')
 db.story.content.label = translate('Content')

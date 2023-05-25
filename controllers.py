@@ -53,6 +53,8 @@ def add():
     # Either this is a GET request, or this is a POST but not accepted = with errors.
     return dict(form=form)
 
+# Dummy comment
+
 # @action('edit/<bird_id:int>', method=["GET", "POST"])
 # @action.uses('edit.html', url_signer, db, session, auth.user)
 # def edit(bird_id=None):
