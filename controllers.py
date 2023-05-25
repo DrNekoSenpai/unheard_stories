@@ -58,8 +58,9 @@ def submit():
 @action.uses(db, session, auth.user, 'view.html')
 def view(story_id = None):
     assert story_id is not None
-    story = db(db.story.story_id == story_id).select()
-    return dict(story=story, url_signer=url_signer, story_id=story_id)
+    rows = db(db.story.story_id == story_id).select()
+    story = rows[0]
+    return dict(story=story, url_signer=url_signer)
 
 # Dummy comment
 
