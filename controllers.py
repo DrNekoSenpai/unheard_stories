@@ -29,6 +29,7 @@ from py4web import action, request, abort, redirect, URL, Field
 from py4web.utils.form import Form, FormStyleBulma
 from py4web.utils.url_signer import URLSigner
 
+from yatl.helpers import A
 from . common import db, session, T, cache, auth, signed_url
 
 url_signer = URLSigner(session)
@@ -44,23 +45,22 @@ def index():
     return dict(rows=rows, url_signer=url_signer)
 
 @action('submit', method=["GET", "POST"])
-@action.uses(db, session, auth.user, 'submit.html')
+@action.uses('submit.html', db, url_signer, session, auth.user)
 def submit():
     form = Form(db.story, csrf_session=session, formstyle=FormStyleBulma)
     if form.accepted:
         # We simply redirect; the insertion already happened.
         redirect(URL('index'))
     # Either this is a GET request, or this is a POST but not accepted = with errors.
-    return dict(form=form)
+    return dict(form=form, url_signer=url_signer)
 
-# To do: make a view_story button and page
 @action('view/<story_id:int>')
-@action.uses(db, session, auth.user, 'view.html')
+@action.uses('view.html', db, url_signer, auth.user)
 def view(story_id = None):
     assert story_id is not None
     rows = db(db.story.story_id == story_id).select()
     story = rows[0]
-    return dict(story=story, url_signer=url_signer)
+    return dict(story=story)
 
 # Dummy comment
 
