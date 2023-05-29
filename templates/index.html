@@ -2,22 +2,32 @@
 
 <div class="section">
   <div class="title">Unheard Stories</div>
-  <div class="container">
+  <div class="container" id="vue-target">
     <table class="table is-striped is-fullwidth">
-      [[for row in rows:]]
-      <tr>
-        <td>
-          [[=row.title]]
-          <a class="button is-success" href="[[=URL('view', row.story_id)]]">
-            <span class="icon"><i class="fa fa-fw fa-eye"></i></span>
-          </a>
-        </td>
-      </tr>
-      [[pass]]
+      <!-- vue feed -->
+      <div v-for="story in feed" class="block">
+        {{story.title}}
+        <!-- view button -->
+        <a class="button is-success" @click="view(story.id)">
+          <span class="icon"><i class="fa fa-fw fa-eye"></i></span>
+        </a>
+      </div>
     </table>
   </div>
-  <a class="button is-success" href="[[=URL('submit', signer=url_signer)]]">
+
+  <!-- add story button -->
+  <a class="button is-success" href="[[=URL('load_add_story_form', signer=url_signer)]]">
     <span class="icon"><i class="fa fa-plus"></i></span>
     <span>Submit a story</span>
   </a>
 </div>
+
+
+[[block page_scripts]]
+<!-- Loads the index-specific js for Vue -->
+<script>
+  let get_feed_url  = "[[=XML(get_feed_url)]]"
+  let view_url      = "[[=XML(view_url)]]"
+</script>
+<script src="js/index.js"></script>
+[[end]]

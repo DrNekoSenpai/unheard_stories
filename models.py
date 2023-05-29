@@ -1,18 +1,7 @@
-"""
-This file defines the database models
-"""
+# This file defines the database models
 
 from .common import db, Field, auth, T as translate
 from pydal.validators import *
-
-### Define your table below
-#
-# db.define_table('thing', Field('name'))
-#
-## always commit your models to avoid problems later
-#
-# db.commit()
-#
 
 # Define a story table. This will store all the stories shared on the blog site. 
 # It'll have fields like story ID, title, content, author, creation date, etc. 
@@ -21,10 +10,10 @@ from pydal.validators import *
 db.define_table(
     'story',
     Field('story_id', 'id'),
-    Field('title', requires=IS_NOT_EMPTY()),
-    Field('content', 'text', requires=IS_NOT_EMPTY()),
-    Field('author', requires=IS_NOT_EMPTY()),
-    Field('creation_date', 'datetime', requires=IS_NOT_EMPTY()),
+    Field('title',                      requires=IS_NOT_EMPTY()),
+    Field('content', 'text',            requires=IS_NOT_EMPTY()),
+    Field('author',                     requires=IS_NOT_EMPTY()),
+    Field('creation_date', 'datetime',  requires=IS_NOT_EMPTY()),
     Field('likes', 'integer', default=0),
     Field('dislikes', 'integer', default=0),
     Field('comments', 'list:reference comment'),
