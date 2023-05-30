@@ -20,6 +20,7 @@ db.define_table(
 )
 
 # The story ID and creation date will not be editable by the user.
+# db.story.story_id.readable -- when you submit a new form, if it's not writable, then it won't show up in the form
 db.story.story_id.readable = db.story.story_id.writable = False
 db.story.creation_date.writable = False
 
