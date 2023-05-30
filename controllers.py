@@ -26,7 +26,7 @@ def get_feed():
     return dict(feed=db(db.story).select().as_list())
 
 @action('load_add_story_form')
-@action.uses('add_story.html', db, session, auth.user, url_signer)
+@action.uses('load_add_story.html', db, session, auth.user, url_signer)
 def load_add_story_form():
     return dict(
         url_signer=url_signer,
