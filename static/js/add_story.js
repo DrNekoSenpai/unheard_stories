@@ -27,6 +27,8 @@ let init = (app) => { // Vue Stuff
         })
     };
 
+    app.view
+
     app.methods = {add_story: app.add_story,};
 
     app.vue = new Vue({ // This creates the Vue instance.
