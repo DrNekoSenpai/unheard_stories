@@ -23,7 +23,7 @@ let init = (app) => { // Vue Stuff
             content:    app.data.add_content,
             author:     app.data.add_author,
         }).then((r) => {
-            console.log(r.data)
+            console.log(r.data);
         })
     };
 
