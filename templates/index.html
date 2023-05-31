@@ -37,18 +37,20 @@
 
   <!-- view story html toggle block -->
   <div v-if="view_mode" class="container block">
+    <!-- Title -->
     <div class="block">
       <div class="title is-2">{{view_title}}</div>
     </div>
+    <!-- details -->
     <div class="block">
       <div class="subtitle is-6">
         by {{view_author}}, Created on {{view_date}}
       </div>
     </div>
+    <!-- content -->
     <div class="block">
       <div class="box">{{view_content}}</div>
     </div>
-
     <!-- Back Button -->
     <input type="submit" @click="set_feed_mode()" value="Back" class="button is-warning">
   </div>
@@ -74,17 +76,13 @@
     </a>
   </div>
 
-
 </div>
-
-<!-- test change-->
 
 [[block page_scripts]]
 <!-- This passes the python controller actions to the js -->
 <script>
   let add_story_url = "[[=XML(add_story_url)]]" 
   let get_feed_url  = "[[=XML(get_feed_url)]]"
-  let view_url      = "[[=XML(view_url)]]"
 </script>
 <script src="js/index.js"></script>
 [[end]]

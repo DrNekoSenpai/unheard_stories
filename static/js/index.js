@@ -84,7 +84,7 @@ let init = (app) => {
         axios.get(get_feed_url).then((r) => {
             app.vue.feed = app.enumerate(r.data.feed);
             console.log(r.data.feed);
-            console.log("Feed Re-Loaded");
+            console.log("Feed Loaded");
         });
     }
     
@@ -106,11 +106,7 @@ let init = (app) => {
     
     app.init = () => {
         console.log("index.js Loaded");
-        axios.get(get_feed_url).then((r) => {
-            app.vue.feed = app.enumerate(r.data.feed);
-            console.log(r.data.feed);
-            console.log("Feed Loaded");
-        });
+        app.refresh();
     };
 
     app.init();

@@ -4,7 +4,7 @@ from py4web                  import action, request, abort, redirect, URL, Field
 from py4web.utils.form       import Form, FormStyleBulma
 from py4web.utils.url_signer import URLSigner
 
-from . common import db, session, T, cache, auth, signed_url
+from .common import db, session, T, cache, auth, signed_url
 
 url_signer = URLSigner(session)
 
@@ -14,7 +14,6 @@ def index():
     return dict(
         url_signer    =url_signer,
         get_feed_url  =URL('get_feed',  signer=url_signer),
-        view_url      =URL('view',      signer=url_signer),
         add_story_url =URL('add_story', signer=url_signer),
     )
 
@@ -35,11 +34,3 @@ def add_story():
         dislikes=0,
     )
     return "ok"
-
-@action('view/<story_id:int>')
-@action.uses(db, session, auth.user, 'view.html')
-def view(story_id = None):
-    assert story_id is not None
-    rows = db(db.story.story_id == story_id).select()
-    story = rows[0]
-    return dict(story=story, url_signer=url_signer)
