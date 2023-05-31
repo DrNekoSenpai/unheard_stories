@@ -13,10 +13,11 @@
         </div>
       </div>
       <!-- Contents Input Field -->
-      <div class="field">
+      <!-- This should be a large input box, not a small one. -->
+      <div class="field"> 
         <label class="label">Contents:</label>
         <div class="control">
-          <input type="text" v-model="add_content" class="input">
+          <textarea v-model="add_content" class="textarea"></textarea>
         </div>
       </div>
       <!-- Author Input Field -->
