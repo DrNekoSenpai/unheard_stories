@@ -71,9 +71,12 @@ let init = (app) => {
         }).then((r) => {
             console.log("story added");
             app.refresh(); // only really need the id for the new story
-            app.vue.add_mode  = false;
-            app.vue.feed_mode = true;
 
+            // reset the input fields
+            app.vue.add_title   =    "",
+            app.vue.add_content =    "",
+            app.vue.add_author  =    "",
+            app.set_feed_mode();
         })
     };
 
