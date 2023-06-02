@@ -12,14 +12,15 @@
           <input type="text" v-model="add_title" class="input">
         </div>
       </div>
+
       <!-- Contents Input Field -->
-      <!-- This should be a large input box, not a small one. -->
       <div class="field"> 
         <label class="label">Contents:</label>
         <div class="control">
           <textarea v-model="add_content" class="textarea"></textarea>
         </div>
       </div>
+
       <!-- Author Input Field -->
       <div class="field">
         <label class="label">Author:</label>
@@ -27,6 +28,8 @@
           <input type="text" v-model="add_author" class="input">
         </div>
       </div>
+
+      <!-- Submit Button -->
       <div class="field">
         <div class="control">
           <input type="submit" @click="add_story" value="Add" class="button is-primary">
@@ -62,11 +65,31 @@
       <table class="table is-striped is-fullwidth">
         <!-- vue feed -->
         <div v-for="story in feed" class="block">
-          {{story.title}}
-          <!-- view button -->
-          <a class="button is-success" @click="view(story._idx)">
-            <span class="icon"><i class="fa fa-fw fa-eye"></i></span>
-          </a>
+          <div class="box">
+            <div class="columns">
+              <div class="column is-11">
+                <p><b>{{story.title}}</b></p>
+                <p><i>by {{story.author}}</i></p>
+
+                <!-- Display likes, dislikes, number of comments -->
+                <p>
+                  <span class="icon"><i class="fa fa-fw fa-thumbs-up"></i></span>
+                  <span>{{story.likes}}</span>
+                  <span class="icon"><i class="fa fa-fw fa-thumbs-down"></i></span>
+                  <span>{{story.dislikes}}</span>
+                  <span class="icon"><i class="fa fa-fw fa-comments"></i></span>
+                  <span>{{story.num_comments}}</span>
+                </p>
+              </div>
+
+              <div class="column is-1">
+                <!-- view button -->
+                <a class="button is-success" @click="view(story._idx)">
+                  <span class="icon"><i class="fa fa-fw fa-eye"></i></span>
+                </a>
+              </div>
+            </div>
+          </div>
         </div>
       </table>
     </div>
@@ -75,7 +98,6 @@
       <span>Submit a story</span>
     </a>
   </div>
-
 </div>
 
 [[block page_scripts]]
