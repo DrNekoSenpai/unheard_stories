@@ -2,40 +2,49 @@
 
 <!-- vue access div -->
 <div class="section" id="vue-target">
-
   <!-- add story html toggle block -->
   <div v-if="add_mode" class="container block">
-      <!-- Title Input Field -->
-      <div class="field">
-        <label class="label">Title:</label>
-        <div class="control">
-          <input type="text" v-model="add_title" class="input">
-        </div>
+    <!-- Title Input Field -->
+    <div class="field">
+      <label class="label">Title:</label>
+      <div class="control">
+        <input type="text" v-model="add_title" class="input" />
       </div>
+    </div>
 
-      <!-- Contents Input Field -->
-      <div class="field"> 
-        <label class="label">Contents:</label>
-        <div class="control">
-          <textarea v-model="add_content" class="textarea"></textarea>
-        </div>
+    <!-- Contents Input Field -->
+    <div class="field">
+      <label class="label">Contents:</label>
+      <div class="control">
+        <textarea v-model="add_content" class="textarea"></textarea>
       </div>
+    </div>
 
-      <!-- Author Input Field -->
-      <div class="field">
-        <label class="label">Author:</label>
-        <div class="control">
-          <input type="text" v-model="add_author" class="input">
-        </div>
+    <!-- Author Input Field -->
+    <div class="field">
+      <label class="label">Author:</label>
+      <div class="control">
+        <input type="text" v-model="add_author" class="input" />
       </div>
+    </div>
 
-      <!-- Submit Button -->
-      <div class="field">
-        <div class="control">
-          <input type="submit" @click="add_story" value="Add" class="button is-primary">
-          <input type="submit" @click="set_feed_mode()" value="Back" class="button is-warning">
-        </div>
+    <!-- Submit Button -->
+    <div class="field">
+      <div class="control">
+        <input
+          type="submit"
+          @click="add_story"
+          value="Add"
+          class="button is-primary"
+        />
+        <input
+          type="submit"
+          @click="set_feed_mode()"
+          value="Back"
+          class="button is-warning"
+        />
       </div>
+    </div>
   </div>
 
   <!-- view story html toggle block -->
@@ -55,7 +64,12 @@
       <div class="box">{{view_content}}</div>
     </div>
     <!-- Back Button -->
-    <input type="submit" @click="set_feed_mode()" value="Back" class="button is-warning">
+    <input
+      type="submit"
+      @click="set_feed_mode()"
+      value="Back"
+      class="button is-warning"
+    />
   </div>
 
   <!-- feed html toggle block -->
@@ -73,10 +87,8 @@
 
                 <!-- Display likes, dislikes, number of comments -->
                 <p>
-                  <span class="icon"><i class="fa fa-fw fa-thumbs-up"></i></span>
+                  <span class="icon"><i class="fa fa-fw fa-heart"></i></span>
                   <span>{{story.likes}}</span>
-                  <span class="icon"><i class="fa fa-fw fa-thumbs-down"></i></span>
-                  <span>{{story.dislikes}}</span>
                   <span class="icon"><i class="fa fa-fw fa-comments"></i></span>
                   <span>{{story.num_comments}}</span>
                 </p>
@@ -103,8 +115,8 @@
 [[block page_scripts]]
 <!-- This passes the python controller actions to the js -->
 <script>
-  let add_story_url = "[[=XML(add_story_url)]]" 
-  let get_feed_url  = "[[=XML(get_feed_url)]]"
+  let add_story_url = "[[=XML(add_story_url)]]";
+  let get_feed_url = "[[=XML(get_feed_url)]]";
 </script>
 <script src="js/index.js"></script>
 [[end]]
