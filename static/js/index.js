@@ -80,6 +80,10 @@ let init = (app) => {
         })
     };
 
+    app.add_comment = () => {
+
+    }
+
     app.refresh = () => {
         axios.get(get_feed_url).then((r) => {
             app.vue.feed = app.enumerate(r.data.feed);
@@ -95,6 +99,7 @@ let init = (app) => {
 
         view:           app.view,
         add_story:      app.add_story,
+        add_comment:    app.add_comment,
         refresh:        app.refresh,
     };
     
