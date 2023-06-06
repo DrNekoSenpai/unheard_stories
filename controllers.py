@@ -22,6 +22,17 @@ def index():
 def get_feed():
     return dict(feed=db(db.story).select().as_list())
 
+@action('add_comment', method="POST")
+@action.uses(db, session, auth.user, url_signer)
+def add_comment():
+    db.comment.insert(
+        content=request.json.get('content'),
+        author=request.json.get('author'),
+        creation_date=datetime.datetime.utcnow(),
+        likes=0,
+    )
+    return "ok"
+
 @action('add_story', method="POST")
 @action.uses(db, session, auth.user, url_signer)
 def add_story():
@@ -31,6 +42,5 @@ def add_story():
         author=request.json.get('author'),
         creation_date=datetime.datetime.utcnow(),
         likes=0,
-        dislikes=0,
     )
     return "ok"

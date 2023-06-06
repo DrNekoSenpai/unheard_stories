@@ -63,10 +63,31 @@
     <div class="block">
       <div class="box">{{view_content}}</div>
     </div>
-    <!-- post comment -->
+    <!-- report post button -->
     <div class="field">
-      <textarea class="textarea" placeholder="Comment" rows="2"></textarea>
+      <div class="control">
+        <button class="button is-danger" @click="report_post">
+          Report post
+        </button>
+      </div>
     </div>
+    <!-- comment box -->
+    <div class="field">
+      <textarea
+        class="textarea"
+        placeholder="Leave a comment"
+        rows="2"
+      ></textarea>
+    </div>
+    <div class="field">
+      <div class="control">
+        <button class="button is-link" @click="add_comment">Comment</button>
+      </div>
+    </div>
+    <!-- display comments block-->
+    <a class="button is-danger" @click="view(story._idx)">
+      <span class="icon"><i class="fa fa-fw fa-warning"></i></span>
+    </a>
     <!-- Back Button -->
     <input
       type="submit"

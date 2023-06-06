@@ -19,6 +19,9 @@ let init = (app) => {
         add_content:    "",
         add_author:     "",
 
+        // add_comment variables
+        
+
         // view_story variables
         view_title:     "",
         view_content:   "",
@@ -81,8 +84,19 @@ let init = (app) => {
     };
 
     app.add_comment = () => {
+        axios.post(add_comment_url, {
+            content:    app.data.add_content,
+            author:     app.data.add_author,
+        }).then((r) => {
+            console.log("comment added");
+            app.refresh(); // only really need the id for the new story
 
-    }
+            // reset the input fields
+            app.vue.add_content =    "",
+            app.vue.add_author  =    "",
+            app.set_feed_mode();
+        })
+    };
 
     app.refresh = () => {
         axios.get(get_feed_url).then((r) => {
