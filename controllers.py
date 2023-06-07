@@ -18,12 +18,12 @@ def index():
     )
 
 @action('get_feed', method=["GET", "POST"])
-@action.uses(db, url_signer, session, auth.user)
+@action.uses(db, auth.user, url_signer)
 def get_feed():
     return dict(feed=db(db.story).select().as_list())
 
 @action('add_comment', method="POST")
-@action.uses(db, session, auth.user, url_signer)
+@action.uses(db, auth.user, url_signer)
 def add_comment():
     db.comment.insert(
         content=request.json.get('content'),
@@ -34,7 +34,7 @@ def add_comment():
     return "ok"
 
 @action('add_story', method="POST")
-@action.uses(db, session, auth.user, url_signer)
+@action.uses(db, auth.user, url_signer)
 def add_story():
     db.story.insert(
         title=request.json.get('title'),

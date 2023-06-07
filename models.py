@@ -8,16 +8,16 @@ from pydal.validators import *
 
 db.define_table(
     'story',
-    Field('story_id', 'id'), # Primary Key
-    Field('title', requires=IS_NOT_EMPTY()),
-    Field('content', 'text', requires=IS_NOT_EMPTY()),
-    Field('author', 'text', requires=IS_NOT_EMPTY()),
-    Field('creation_date', 'datetime', requires=IS_NOT_EMPTY()),
-    Field('likes', 'integer', default=0),
-    Field('dislikes', 'integer', default=0),
-    Field('comments', 'list:reference comment'),
-    Field('num_comments', 'integer', default=0),
-    Field('tags', 'list:string'),
+    Field('story_id',       'id'),                     # Primary Key
+    Field('title',                                     requires=IS_NOT_EMPTY()),
+    Field('content',        'text',                    requires=IS_NOT_EMPTY()),
+    Field('author',         'text',                    requires=IS_NOT_EMPTY()),
+    Field('creation_date',  'datetime',                requires=IS_NOT_EMPTY()),
+    Field('likes',          'integer',                 default=0),
+    Field('dislikes',       'integer',                 default=0),
+    Field('comments',       'list:reference comment'),
+    Field('num_comments',   'integer',                 default=0),
+    Field('tags',           'list:string'),
 )
 
 # most fields will not be editable by the user.
@@ -33,12 +33,12 @@ db.story.num_comments.writable  = False
 
 db.define_table(
     'comment',
-    Field('comment_id',     'id'),          # Primary Key
-    Field('story_id',       'reference story'),
-    Field('content',        'text',         requires=IS_NOT_EMPTY()),
-    Field('author',                         requires=IS_NOT_EMPTY()),
-    Field('creation_date', 'datetime',      requires=IS_NOT_EMPTY()),
-    Field('likes',         'integer',                                default=0),
+    Field('comment_id',    'id'),                     # Primary Key
+    Field('story_id',      'reference story',         requires=IS_NOT_EMPTY()),
+    Field('content',       'text',                    requires=IS_NOT_EMPTY()),
+    Field('author',                                   requires=IS_NOT_EMPTY()),
+    Field('creation_date', 'datetime',                requires=IS_NOT_EMPTY()),
+    Field('likes',         'integer',                 default=0),
     Field('replies',       'list:reference comment'),
 )
 

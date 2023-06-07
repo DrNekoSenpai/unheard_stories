@@ -14,13 +14,10 @@ let init = (app) => {
         // feed variables
         feed:       [],
 
-        // add_story variables
+        // variables for add_story and add_comment variables
         add_title:      "",
         add_content:    "",
         add_author:     "",
-
-        // add_comment variables
-        
 
         // view_story variables
         view_title:     "",
