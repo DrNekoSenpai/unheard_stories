@@ -28,6 +28,7 @@ def get_feed():
 @action.uses(db, auth.user, url_signer)
 def get_feed():
     story_id = request.json.get('story_id')
+    num_comments = request.json.get('num_comments')
     comments = db(db.comment.story_id == story_id).select().as_list()
     return dict(comments=comments[::-1]) # return reversed list
 
@@ -36,6 +37,7 @@ def get_feed():
 def add_comment():
     story_id        =request.json.get('story_id'),
     content         =request.json.get('content'),
+    num_comments    =request.json.get('num_comments'),
     
     db.comment.insert(
         story_id        =request.json.get('story_id'),
@@ -44,6 +46,7 @@ def add_comment():
         creation_date   =datetime.datetime.utcnow(),
         likes           =0,
     )
+
     return "ok"
 
 @action('add_story', method="POST")
@@ -52,7 +55,7 @@ def add_story():
     db.story.insert(
         title           =request.json.get('title'),
         content         =request.json.get('content'),
-        author          =request.json.get('author'),
+        author          =auth.current_user.get('username'),
         creation_date   =datetime.datetime.utcnow(),
         likes=0,
     )

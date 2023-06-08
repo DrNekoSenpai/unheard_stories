@@ -90,7 +90,6 @@ let init = (app) => {
         axios.post(add_story_url, {
             title:      app.vue.add_title,
             content:    app.vue.add_content,
-            author:     app.vue.add_author,
         }).then((r) => {
             console.log("story", app.vue.add_title, "added");
             app.get_feed(); // only really need the id for the new story
@@ -102,8 +101,11 @@ let init = (app) => {
         axios.post(add_comment_url, {
             content:    app.vue.add_content,
             story_id:   app.vue.view_id,
+            num_comments: app.vue.num_comments, 
         }).then((r) => {
+            app.vue.num_comments += 1;
             console.log("comment added");
+            app.vue.add_content = ""; // clear input fields
             app.get_comments() // refresh comments dynamically
         }).catch(() => {console.error("DEAD ADD_COMMENT");})
     };

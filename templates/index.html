@@ -21,14 +21,6 @@
       </div>
     </div>
 
-    <!-- Author Input Field -->
-    <div class="field">
-      <label class="label">Author:</label>
-      <div class="control">
-        <input type="text" v-model="add_author" class="input" />
-      </div>
-    </div>
-
     <!-- Submit Button -->
     <div class="field">
       <div class="control">
@@ -72,20 +64,6 @@
         </button>
       </div>
     </div>
-    <!-- comment box -->
-    <div class="field">
-      <textarea
-        class="textarea"
-        placeholder="Leave a comment"
-        rows="2"
-        v-model="add_content"
-      ></textarea>
-    </div>
-    <div class="field">
-      <div class="control">
-        <button class="button is-link" @click="add_comment()">Comment</button>
-      </div>
-    </div>
 
     <!-- display comments block-->
     <div v-for="comment in comments" class="block">
@@ -108,7 +86,16 @@
         </div>
         <nav class="level is-mobile">
           <div class="level-left">
+            <!-- like button -->
+            <a class="level-item" aria-label="like" @click="like(comment)">
+              <span class="icon is-small">
+                <i class="fa fa-heart"></i>
+              </span>
+              <!-- likes count -->
+              <span class="ml-1">{{comment.likes}}</span>
+            </a>
             <!-- reply icon -->
+            <!-- clicking the reply button should open up a text box -->
             <a class="level-item" aria-label="reply" 
             @click="set_reply_mode(post)">
               <span class="icon is-small" >
@@ -117,11 +104,10 @@
               <!-- replies count -->
               <span class="ml-1">{{comment.replies}}</span> <!-- might cause problems -->
             </a>
-            <!-- repost button -->
-            <a class="level-item" aria-label="retweet" 
-            @click="repost(post.author, post.content)">
+            <!-- report comment button -->
+            <a class="level-item" aria-label="report" @click="report_comment(comment)">
               <span class="icon is-small">
-                <i class="fa fa-retweet" aria-hidden="true"></i>
+                <i class="fa fa-warning"></i>
               </span>
             </a>
           </div>
@@ -129,9 +115,21 @@
       </div>
     </div>
 
-    <a class="button is-danger" @click="view(story._idx)">
-      <span class="icon"><i class="fa fa-fw fa-warning"></i></span>
-    </a>
+    <!-- comment box -->
+    <div class="field">
+      <textarea
+        class="textarea"
+        placeholder="Leave a comment"
+        rows="2"
+        v-model="add_content"
+      ></textarea>
+    </div>
+    <div class="field">
+      <div class="control">
+        <button class="button is-link" @click="add_comment()">Comment</button>
+      </div>
+    </div>
+
     <!-- Back Button -->
     <input
       type="submit"
