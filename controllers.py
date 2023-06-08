@@ -47,6 +47,9 @@ def add_comment():
         likes           =0,
     )
 
+    # Increment the number of comments for the story
+    db(db.story.story_id == story_id).update(num_comments=num_comments+1)
+
     return "ok"
 
 @action('add_story', method="POST")

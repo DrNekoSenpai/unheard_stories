@@ -28,7 +28,7 @@ let init = (app) => {
         view_date:      "",
 
         // reply variables
-        
+        num_comments: 0, 
     };
     
     app.enumerate = (a) => { // This adds an _idx field.
