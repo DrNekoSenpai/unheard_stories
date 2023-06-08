@@ -2,7 +2,7 @@
 
 <!-- vue access div -->
 <div class="section" id="vue-target">
-  
+
   <!-- add story html toggle block -->
   <div v-if="add_mode" class="container block">
     <!-- Title Input Field -->
@@ -67,7 +67,7 @@
     <!-- report post button -->
     <div class="field">
       <div class="control">
-        <button class="button is-danger" @click="report_post">
+        <button class="button is-danger" @click="report_post()">
           Report post
         </button>
       </div>
@@ -78,14 +78,57 @@
         class="textarea"
         placeholder="Leave a comment"
         rows="2"
+        v-model="add_content"
       ></textarea>
     </div>
     <div class="field">
       <div class="control">
-        <button class="button is-link" @click="add_comment">Comment</button>
+        <button class="button is-link" @click="add_comment()">Comment</button>
       </div>
     </div>
+
     <!-- display comments block-->
+    <div v-for="comment in comments" class="block">
+      <div class="box">
+        <nav class="level is-mobile">
+          <div class="level-left">
+            <a class="level-item" aria-label="reply">
+              <span class="icon is-small">
+                <i class="fa fa-user"></i>
+              </span>
+              <span class="ml-2">{{comment.author}}</span>
+            </a>
+          </div>
+          <div class="level-right">
+            <span class="level-item">{{comment.creation_date}}</span>
+          </div>
+        </nav>
+        <div class="content">
+          {{comment.content}}
+        </div>
+        <nav class="level is-mobile">
+          <div class="level-left">
+            <!-- reply icon -->
+            <a class="level-item" aria-label="reply" 
+            @click="set_reply_mode(post)">
+              <span class="icon is-small" >
+                <i class="fa fa-reply" aria-hidden="true"></i>
+              </span>
+              <!-- replies count -->
+              <span class="ml-1">{{comment.replies}}</span> <!-- might cause problems -->
+            </a>
+            <!-- repost button -->
+            <a class="level-item" aria-label="retweet" 
+            @click="repost(post.author, post.content)">
+              <span class="icon is-small">
+                <i class="fa fa-retweet" aria-hidden="true"></i>
+              </span>
+            </a>
+          </div>
+        </nav>
+      </div>
+    </div>
+
     <a class="button is-danger" @click="view(story._idx)">
       <span class="icon"><i class="fa fa-fw fa-warning"></i></span>
     </a>
@@ -141,8 +184,10 @@
 [[block page_scripts]]
 <!-- This passes the python controller actions to the js -->
 <script>
-  let add_story_url = "[[=XML(add_story_url)]]";
-  let get_feed_url = "[[=XML(get_feed_url)]]";
+  let get_feed_url     = "[[=XML(get_feed_url)]]";
+  let add_story_url    = "[[=XML(add_story_url)]]";
+  let add_comment_url  = "[[=XML(add_comment_url)]]";
+  let get_comments_url = "[[=XML(get_comments_url)]]";
 </script>
 <script src="js/index.js"></script>
 [[end]]

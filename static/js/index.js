@@ -7,12 +7,13 @@ let init = (app) => {
     app.data = {
 
         // bools for toggling what html to display
-        feed_mode:  true,
-        add_mode:   false,
-        view_mode:  false,
+        feed_mode:      true,
+        add_mode:       false,
+        view_mode:      false,
 
-        // feed variables
-        feed:       [],
+        // list variables
+        feed:           [],
+        comments:       [],
 
         // variables for add_story and add_comment variables
         add_title:      "",
@@ -20,98 +21,129 @@ let init = (app) => {
         add_author:     "",
 
         // view_story variables
+        view_id:        -1,
         view_title:     "",
         view_content:   "",
         view_author:    "",
         view_date:      "",
 
+        // reply variables
+        
     };
     
-    app.enumerate = (a) => { // This adds an _idx field to each element in a.
+    app.enumerate = (a) => { // This adds an _idx field.
         let k = 0;
         a.map((e) => {e._idx = k++;});
         return a;
     };
 
     app.set_feed_mode = () => {
+        // togle html view
         app.vue.view_mode   = false;
         app.vue.add_mode    = false;
         app.vue.feed_mode   = true;
     }
 
     app.set_add_mode = () => {
+
+        // reset the input fields for add_story input
+        app.vue.add_title   = "",
+        app.vue.add_content = "",
+        app.vue.add_author  = "",
+
+        // togle html view
         app.vue.feed_mode   = false;
         app.vue.view_mode   = false;
         app.vue.add_mode    = true;
     }
 
     app.set_view_mode = () => {
-        app.vue.feed_mode = false;
-        app.vue.add_mode  = false;
-        app.vue.view_mode = true;
+
+        // reset the input fields for add_comment input
+        app.vue.add_title   = "",
+        app.vue.add_content = "",
+        app.vue.add_author  = "",
+
+        // togle html view
+        app.vue.feed_mode   = false;
+        app.vue.add_mode    = false;
+        app.vue.view_mode   = true;
     }
 
     app.view = (_idx) => {
-        console.log("view", _idx);
+
+        // get story details for viewing
+        app.vue.view_id         = app.vue.feed[_idx].id;
         app.vue.view_title      = app.vue.feed[_idx].title;
         app.vue.view_content    = app.vue.feed[_idx].content;
         app.vue.view_author     = app.vue.feed[_idx].author;
         app.vue.view_date       = app.vue.feed[_idx].creation_date;
-        console.log(app.vue.view_title);
-        view_date_c     = "time";
+
+        // get comment list for viewing
+       app.get_comments();
 
         app.set_view_mode();
+        console.log("viewing", app.vue.view_title);
     }
 
     app.add_story = () => {
         axios.post(add_story_url, {
-            title:      app.data.add_title,
-            content:    app.data.add_content,
-            author:     app.data.add_author,
+            title:      app.vue.add_title,
+            content:    app.vue.add_content,
+            author:     app.vue.add_author,
         }).then((r) => {
-            console.log("story added");
-            app.refresh(); // only really need the id for the new story
-
-            // reset the input fields
-            app.vue.add_title   =    "",
-            app.vue.add_content =    "",
-            app.vue.add_author  =    "",
+            console.log("story", app.vue.add_title, "added");
+            app.get_feed(); // only really need the id for the new story
             app.set_feed_mode();
-        })
+        }).catch(() => {console.error("DEAD ADD_STORY");})
     };
 
     app.add_comment = () => {
         axios.post(add_comment_url, {
-            content:    app.data.add_content,
-            author:     app.data.add_author,
+            content:    app.vue.add_content,
+            story_id:   app.vue.view_id,
         }).then((r) => {
             console.log("comment added");
-            app.refresh(); // only really need the id for the new story
-
-            // reset the input fields
-            app.vue.add_content =    "",
-            app.vue.add_author  =    "",
-            app.set_feed_mode();
-        })
+            app.get_comments() // refresh comments dynamically
+        }).catch(() => {console.error("DEAD ADD_COMMENT");})
     };
 
-    app.refresh = () => {
-        axios.get(get_feed_url).then((r) => {
+    app.get_feed = () => {
+        axios.post(get_feed_url).then((r) => {
             app.vue.feed = app.enumerate(r.data.feed);
-            console.log(r.data.feed);
-            console.log("Feed Loaded");
-        });
+            console.log("Feed Loaded:", r.data.feed);
+        }).catch(() => {console.error("DEAD GET_FEED");})
+    }
+
+    app.get_comments = () => {
+        axios.post(get_comments_url, {
+            story_id:   app.vue.view_id, // assumes that a story is viewed
+        }).then((r) => {
+            app.vue.comments = app.enumerate(r.data.comments);
+            console.log("comments loaded");
+        }).catch(() => {console.error("DEAD GET_COMMENTS");})
+    }
+
+    app.report_post = () => {
+        // TODO
+        console.error("TODO: report_post js");
     }
     
     app.methods = {
+        // mode switch methods
         set_feed_mode:  app.set_feed_mode,
         set_add_mode:   app.set_add_mode,
         set_view_mode:  app.set_view_mode,
 
-        view:           app.view,
+        // story functions
         add_story:      app.add_story,
+        get_feed:       app.get_feed, // gets a list of stories
+        view:           app.view,
+
+        // comment functions
         add_comment:    app.add_comment,
-        refresh:        app.refresh,
+        get_comments:   app.get_comments, // gets a list of comments
+        report_post:    app.report_post,
     };
     
     app.vue = new Vue({
@@ -122,7 +154,7 @@ let init = (app) => {
     
     app.init = () => {
         console.log("index.js Loaded");
-        app.refresh();
+        app.get_feed();
     };
 
     app.init();

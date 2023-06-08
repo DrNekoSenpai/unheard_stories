@@ -12,24 +12,37 @@ url_signer = URLSigner(session)
 @action.uses('index.html', db, auth.user, url_signer)
 def index():
     return dict(
-        url_signer    =url_signer,
-        get_feed_url  =URL('get_feed',  signer=url_signer),
-        add_story_url =URL('add_story', signer=url_signer),
+        url_signer       =url_signer,
+        get_feed_url     =URL('get_feed',       signer=url_signer),
+        get_comments_url =URL('get_comments',   signer=url_signer),
+        add_story_url    =URL('add_story',      signer=url_signer),
+        add_comment_url  =URL('add_comment',    signer=url_signer),
     )
 
-@action('get_feed', method=["GET", "POST"])
+@action('get_feed', method="POST")
 @action.uses(db, auth.user, url_signer)
 def get_feed():
     return dict(feed=db(db.story).select().as_list())
 
+@action('get_comments', method="POST")
+@action.uses(db, auth.user, url_signer)
+def get_feed():
+    story_id = request.json.get('story_id')
+    comments = db(db.comment.story_id == story_id).select().as_list()
+    return dict(comments=comments[::-1]) # return reversed list
+
 @action('add_comment', method="POST")
 @action.uses(db, auth.user, url_signer)
 def add_comment():
+    story_id        =request.json.get('story_id'),
+    content         =request.json.get('content'),
+    
     db.comment.insert(
-        content=request.json.get('content'),
-        author=request.json.get('author'),
-        creation_date=datetime.datetime.utcnow(),
-        likes=0,
+        story_id        =request.json.get('story_id'),
+        content         =request.json.get('content'),
+        author          =auth.current_user.get('username'),
+        creation_date   =datetime.datetime.utcnow(),
+        likes           =0,
     )
     return "ok"
 
@@ -37,10 +50,10 @@ def add_comment():
 @action.uses(db, auth.user, url_signer)
 def add_story():
     db.story.insert(
-        title=request.json.get('title'),
-        content=request.json.get('content'),
-        author=request.json.get('author'),
-        creation_date=datetime.datetime.utcnow(),
+        title           =request.json.get('title'),
+        content         =request.json.get('content'),
+        author          =request.json.get('author'),
+        creation_date   =datetime.datetime.utcnow(),
         likes=0,
     )
     return "ok"
