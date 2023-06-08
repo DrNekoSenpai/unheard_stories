@@ -50,6 +50,7 @@ def add_comment():
     # Increment the number of comments for the story
     db(db.story.story_id == request.json.get('story_id')).update(num_comments=request.json.get('num_comments'))
 
+    # useless comment
     return "ok"
 
 @action('add_story', method="POST")
