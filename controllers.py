@@ -35,10 +35,6 @@ def get_feed():
 @action('add_comment', method="POST")
 @action.uses(db, auth.user, url_signer)
 def add_comment():
-    story_id        =request.json.get('story_id'),
-    content         =request.json.get('content'),
-    num_comments    =request.json.get('num_comments'),
-    
     db.comment.insert(
         story_id        =request.json.get('story_id'),
         content         =request.json.get('content'),
@@ -49,8 +45,6 @@ def add_comment():
 
     # Increment the number of comments for the story
     db(db.story.story_id == request.json.get('story_id')).update(num_comments=request.json.get('num_comments'))
-
-    # useless comment
     return "ok"
 
 @action('add_story', method="POST")

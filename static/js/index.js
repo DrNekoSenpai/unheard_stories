@@ -22,6 +22,7 @@ let init = (app) => {
 
         // view_story variables
         view_id:        -1,
+        view_idx:       -1,
         view_title:     "",
         view_content:   "",
         view_author:    "",
@@ -74,10 +75,12 @@ let init = (app) => {
 
         // get story details for viewing
         app.vue.view_id         = app.vue.feed[_idx].id;
+        app.vue.view_idx        = app.vue.feed[_idx].id;
         app.vue.view_title      = app.vue.feed[_idx].title;
         app.vue.view_content    = app.vue.feed[_idx].content;
         app.vue.view_author     = app.vue.feed[_idx].author;
         app.vue.view_date       = app.vue.feed[_idx].creation_date;
+        app.vue.num_comments    = app.vue.feed[_idx].num_comments;
 
         // get comment list for viewing
        app.get_comments();
@@ -101,9 +104,11 @@ let init = (app) => {
         axios.post(add_comment_url, {
             content:    app.vue.add_content,
             story_id:   app.vue.view_id,
-            num_comments: app.vue.num_comments, 
+            num_comments: app.vue.num_comments + 1, 
         }).then((r) => {
-            app.vue.num_comments += 1;
+            
+            app.get_feed(); // we just need to update 1 number, but it works
+
             console.log("comment added");
             app.vue.add_content = ""; // clear input fields
             app.get_comments() // refresh comments dynamically
