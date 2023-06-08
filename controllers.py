@@ -48,7 +48,7 @@ def add_comment():
     )
 
     # Increment the number of comments for the story
-    db(db.story.story_id == story_id).update(num_comments=num_comments+1)
+    db(db.story.story_id == request.json.get('story_id')).update(num_comments=request.json.get('num_comments'))
 
     return "ok"
 
