@@ -11,6 +11,10 @@ let init = (app) => {
         add_mode:       false,
         view_mode:      false,
 
+        // search variables
+        search:         "",
+        search_results: [],
+
         // list variables
         feed:           [],
         comments:       [],
@@ -83,10 +87,15 @@ let init = (app) => {
         app.vue.num_comments    = app.vue.feed[_idx].num_comments;
 
         // get comment list for viewing
-       app.get_comments();
+        app.get_comments();
 
         app.set_view_mode();
         console.log("viewing", app.vue.view_title);
+    }
+
+    app.reset_search = () => {
+        app.vue.search = "";
+        app.vue.search_results = [];
     }
 
     app.add_story = () => {
@@ -115,12 +124,16 @@ let init = (app) => {
         }).catch(() => {console.error("DEAD ADD_COMMENT");})
     };
 
-    app.get_feed = () => {
-        axios.post(get_feed_url).then((r) => {
-            app.vue.feed = app.enumerate(r.data.feed);
-            console.log("Feed Loaded:", r.data.feed);
-        }).catch(() => {console.error("DEAD GET_FEED");})
-    }
+    app.get_feed = (search) => {
+        axios.post(get_feed_url, { search: search })
+            .then((r) => {
+                app.vue.feed = app.enumerate(r.data.feed);
+                console.log("Feed Loaded:", r.data.feed);
+            })
+            .catch(() => {
+                console.error("DEAD GET_FEED");
+            });
+    }    
 
     app.get_comments = () => {
         axios.post(get_comments_url, {
@@ -141,6 +154,7 @@ let init = (app) => {
         set_feed_mode:  app.set_feed_mode,
         set_add_mode:   app.set_add_mode,
         set_view_mode:  app.set_view_mode,
+        reset_search:   app.reset_search,
 
         // story functions
         add_story:      app.add_story,

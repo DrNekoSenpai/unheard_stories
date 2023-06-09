@@ -142,6 +142,14 @@
   <!-- feed html toggle block -->
   <div v-if="feed_mode" class="container block">
     <div class="title">Unheard Stories</div>
+    <div class="field">
+      <p class="control has-icons-right">
+        <input class="input" type="text" placeholder="Search stories" v-model="search" @input="get_feed(search)">
+        <span class="icon is-small is-right is-clickable" @click="reset_search">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </p>
+    </div>
     <div class="container">
       <table class="table is-striped is-fullwidth">
         <!-- vue feed -->
