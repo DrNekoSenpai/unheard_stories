@@ -59,11 +59,15 @@ def add_comment():
 @action('add_story', method="POST")
 @action.uses(db, auth.user, url_signer)
 def add_story():
+    # tags = request.json.get('tags')
+    # # Split tags into a list and remove leading/trailing whitespace from each tag
+    # tag_list = [tag.strip() for tag in tags.split(',')]
     db.story.insert(
         title           =request.json.get('title'),
         content         =request.json.get('content'),
+        # tags            =request.json.get('tags'),
         author          =auth.current_user.get('username'),
         creation_date   =datetime.datetime.utcnow(),
-        likes=0,
+        likes           =0,
     )
     return "ok"

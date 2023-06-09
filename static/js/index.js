@@ -17,7 +17,11 @@ let init = (app) => {
 
         // list variables
         feed:           [],
-        comments:       [],
+        comments:       [], 
+
+        // tag variables
+        // tags:           [],
+        // currentTag:     "",
 
         // variables for add_story and add_comment variables
         add_title:      "",
@@ -55,6 +59,8 @@ let init = (app) => {
         app.vue.add_title   = "",
         app.vue.add_content = "",
         app.vue.add_author  = "",
+        // app.vue.add_tags    = "",
+        // app.vue.tags        = [],
 
         // togle html view
         app.vue.feed_mode   = false;
@@ -68,6 +74,8 @@ let init = (app) => {
         app.vue.add_title   = "",
         app.vue.add_content = "",
         app.vue.add_author  = "",
+        // app.vue.add_tags    = "",
+        // app.vue.tags        = [],
 
         // togle html view
         app.vue.feed_mode   = false;
@@ -96,14 +104,17 @@ let init = (app) => {
     app.reset_search = () => {
         app.vue.search = "";
         app.vue.search_results = [];
+        app.get_feed();
     }
 
     app.add_story = () => {
         axios.post(add_story_url, {
             title:      app.vue.add_title,
             content:    app.vue.add_content,
+            // tags:       app.vue.tags,
         }).then((r) => {
             console.log("story", app.vue.add_title, "added");
+            // app.vue.tags = []; // clear tags
             app.get_feed(); // only really need the id for the new story
             app.set_feed_mode();
         }).catch(() => {console.error("DEAD ADD_STORY");})
@@ -123,6 +134,18 @@ let init = (app) => {
             app.get_comments() // refresh comments dynamically
         }).catch(() => {console.error("DEAD ADD_COMMENT");})
     };
+
+    // app.addTag = () => {
+    //     let tag = app.vue.currentTag.trim();
+    //     if (tag && app.vue.tags.indexOf(tag) < 0) {
+    //         app.vue.tags.push(tag);
+    //     }
+    //     app.vue.currentTag = "";
+    // };
+
+    // app.removeTag = (index) => {
+    //     app.vue.tags.splice(index, 1);
+    // };
 
     app.get_feed = (search) => {
         axios.post(get_feed_url, { search: search })
@@ -160,6 +183,8 @@ let init = (app) => {
         add_story:      app.add_story,
         get_feed:       app.get_feed, // gets a list of stories
         view:           app.view,
+        // addTag:         app.addTag,
+        // removeTag:      app.removeTag,
 
         // comment functions
         add_comment:    app.add_comment,
