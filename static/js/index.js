@@ -7,9 +7,10 @@ let init = (app) => {
     app.data = {
 
         // bools for toggling what html to display
-        feed_mode:      true,
-        add_mode:       false,
-        view_mode:      false,
+        feed_mode:  true,
+        add_mode:   false,
+        view_mode:  false,
+        mod_view:   false,
 
         // search variables
         search:         "",
@@ -20,24 +21,26 @@ let init = (app) => {
         comments:       [], 
 
         // tag variables
-        // tags:           [],
-        // currentTag:     "",
+        // tags:       [],
+        // currentTag: "",
 
         // variables for add_story and add_comment variables
-        add_title:      "",
-        add_content:    "",
-        add_author:     "",
+        add_title:    "",
+        add_content:  "",
+        add_author:   "",
 
         // view_story variables
-        view_id:        -1,
-        view_idx:       -1,
-        view_title:     "",
-        view_content:   "",
-        view_author:    "",
-        view_date:      "",
+        view_id:            -1,
+        view_idx:           -1,
+        view_title:         "",
+        view_content:       "",
+        view_author:        "",
+        view_date:          "",
+        view_num_reports:   -1,
 
-        // reply variables
-        num_comments: 0, 
+        // mod vars
+        ismod: false,
+        report_view: false,
     };
     
     app.enumerate = (a) => { // This adds an _idx field.
@@ -86,16 +89,19 @@ let init = (app) => {
     app.view = (_idx) => {
 
         // get story details for viewing
-        app.vue.view_id         = app.vue.feed[_idx].id;
-        app.vue.view_idx        = app.vue.feed[_idx].id;
-        app.vue.view_title      = app.vue.feed[_idx].title;
-        app.vue.view_content    = app.vue.feed[_idx].content;
-        app.vue.view_author     = app.vue.feed[_idx].author;
-        app.vue.view_date       = app.vue.feed[_idx].creation_date;
-        app.vue.num_comments    = app.vue.feed[_idx].num_comments;
+        app.vue.view_id             = app.vue.feed[_idx].id;
+        app.vue.view_idx            = app.vue.feed[_idx].id;
+        app.vue.view_title          = app.vue.feed[_idx].title;
+        app.vue.view_content        = app.vue.feed[_idx].content;
+        app.vue.view_author         = app.vue.feed[_idx].author;
+        app.vue.view_date           = app.vue.feed[_idx].creation_date;
+        app.vue.view_num_reports    = app.vue.feed[_idx].num_reports;
 
         // get comment list for viewing
-        app.get_comments();
+        if (!app.vue.ismod || !app.vue.report_view)
+            {app.get_comments();}
+        else
+            {app.get_rcomments();}
 
         app.set_view_mode();
         console.log("viewing", app.vue.view_title);
@@ -124,7 +130,6 @@ let init = (app) => {
         axios.post(add_comment_url, {
             content:    app.vue.add_content,
             story_id:   app.vue.view_id,
-            num_comments: app.vue.num_comments + 1, 
         }).then((r) => {
             
             app.get_feed(); // we just need to update 1 number, but it works
@@ -156,6 +161,8 @@ let init = (app) => {
             .catch(() => {
                 console.error("DEAD GET_FEED");
             });
+
+            app.vue.report_view = false; // disable report view
     }    
 
     app.get_comments = () => {
@@ -167,29 +174,133 @@ let init = (app) => {
         }).catch(() => {console.error("DEAD GET_COMMENTS");})
     }
 
-    app.report_post = () => {
-        // TODO
-        console.error("TODO: report_post js");
+    app.report_story = () => {
+        // assume user is viewing the story to use view variables
+        axios.post(report_story_url, {
+            story_id:       app.vue.view_id,
+        }).then((r) => {
+        
+            // TODO: set view to thank you for report view
+
+            console.log("reported", app.vue.view_title,);
+
+        }).catch(() => {console.error("DEAD REPORT_STORY");})
     }
+
+    app.report_comment = (comment_id) => {
+        // assume user is viewing the story to use view variables
+        axios.post(report_comment_url, {
+            story_id:         app.vue.view_id,
+            comment_id:       comment_id, // passed in
+        }).then((r) => {
+        
+            // TODO: set view to thank you for report view
+
+            console.log("reported comment", comment_id);
+            
+
+        }).catch(() => {console.error("DEAD REPORT_COMMENT");})
+    }
+
+    app.get_rfeed     = () => {
+        axios.post(get_rfeed_url)
+        .then((r) => {
+            app.vue.feed = app.enumerate(r.data.reports);
+            console.log("rfeed Loaded:", r.data.feed);
+        })
+        .catch(() => {
+            console.error("DEAD GET_RFEED");
+        });
+        
+        app.vue.report_view = true; // enable report view
+    }
+
+    app.get_rcomments = () => {
+        axios.post(get_rcomments_url, {
+            story_id:   app.vue.view_id, // assumes that a story is viewed
+        }).then((r) => {
+            app.vue.comments = app.enumerate(r.data.comments);
+            console.log("rcomments loaded");
+        }).catch(() => {console.error("DEAD GET_RCOMMENTS");})
+    }
+
+    app.get_ismod = () => {
+        axios.post(get_ismod_url)
+        .then((r) => {
+            app.vue.ismod = r.data.ismod;
+            console.log("ismod:", app.vue.ismod);
+        })
+        .catch(() => {
+            console.error("DEAD ISMOD");
+        });
+    }
+
+    app.mod_approve = (id, obj_type) => { // TODO
+        // untested, in progress, probably doesn't work
+        axios.post(mod_approve_url, {
+            obj_type:   type,
+            story_id:   story_id,
+            comment_id: comment_id,
+        })
+        .then((r) => {
+            app.vue.ismod = r.data.ismod;
+            console.log("ismod:", app.vue.ismod);
+        })
+        .catch(() => {
+            console.error("DEAD MOD_APPROVE");
+        });
+    }
+
+    app.delete_story    = () => { // TODO
+    }
+
+    app.delete_comment  = () => { // TODO
+    }
+
+    app.report_popup    = () => { // TODO
+
+        // idea for the pop-up is to just have another html toggle with 
+        // a thanks for the report message and a back button
+        // that just toggles off the popup toggle variable
+    }
+
     
     app.methods = {
         // mode switch methods
-        set_feed_mode:  app.set_feed_mode,
-        set_add_mode:   app.set_add_mode,
-        set_view_mode:  app.set_view_mode,
-        reset_search:   app.reset_search,
+        set_feed_mode:      app.set_feed_mode,
+        set_add_mode:       app.set_add_mode,
+        set_view_mode:      app.set_view_mode,
+        reset_search:       app.reset_search,
 
         // story functions
-        add_story:      app.add_story,
-        get_feed:       app.get_feed, // gets a list of stories
-        view:           app.view,
-        // addTag:         app.addTag,
-        // removeTag:      app.removeTag,
+        add_story:          app.add_story,
+        get_feed:           app.get_feed, // gets a list of stories
+        view:               app.view,
+        // addTag:          app.addTag,
+        // removeTag:       app.removeTag,
 
         // comment functions
-        add_comment:    app.add_comment,
-        get_comments:   app.get_comments, // gets a list of comments
-        report_post:    app.report_post,
+        add_comment:        app.add_comment,
+        get_comments:       app.get_comments, // gets a list of comments
+
+
+        // mod/admin regulation functions
+        report_story:       app.report_story,
+        report_comment:     app.report_comment,
+        
+        get_rfeed:          app.get_rfeed,
+        get_rcomments:      app.get_rcomments,
+        get_ismod:          app.get_ismod,
+
+        // TODO functions
+        mod_approve:        app.mod_approve,
+        delete_story:       app.delete_story,
+        delete_comment:     app.delete_comment,
+
+        // misc
+        report_popup:       app.report_popup,
+
+
     };
     
     app.vue = new Vue({
@@ -199,6 +310,7 @@ let init = (app) => {
     });
     
     app.init = () => {
+        app.get_ismod();
         console.log("index.js Loaded");
         app.get_feed();
     };

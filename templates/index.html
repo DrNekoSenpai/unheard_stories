@@ -84,10 +84,10 @@
     <div class="block">
       <div class="box">{{view_content}}</div>
     </div>
-    <!-- report post button -->
+    <!-- report story button -->
     <div class="field">
       <div class="control">
-        <button class="button is-danger" @click="report_post()">
+        <button class="button is-danger" @click="report_story()">
           Report post
         </button>
       </div>
@@ -133,7 +133,7 @@
               <span class="ml-1">{{comment.replies}}</span> <!-- might cause problems -->
             </a>
             <!-- report comment button -->
-            <a class="level-item" aria-label="report" @click="report_comment(comment)">
+            <a class="level-item" aria-label="report" @click="report_comment(comment.comment_id)">
               <span class="icon is-small">
                 <i class="fa fa-warning"></i>
               </span>
@@ -199,7 +199,8 @@
 
               <div class="column is-1">
                 <!-- view button -->
-                <a class="button is-success" @click="view(story._idx)">
+                <a class="button" @click="view(story._idx)" 
+                :class="{'is-link': !ismod || !report_view, 'is-danger': ismod && report_view}">
                   <span class="icon"><i class="fa fa-fw fa-eye"></i></span>
                 </a>
               </div>
@@ -212,16 +213,39 @@
       <span class="icon"><i class="fa fa-plus"></i></span>
       <span>Submit a story</span>
     </a>
+
+    <!-- reports toggle buttons -->
+    <div v-if="ismod">
+      <a class="button is-link" @click="get_feed()">
+        <span>View Feed</span>
+      </a>
+
+      <a class="button is-danger" @click="get_rfeed()">
+        <span>View Reports</span>
+      </a>
+    </div>
+
   </div>
 </div>
 
 [[block page_scripts]]
 <!-- This passes the python controller actions to the js -->
 <script>
-  let get_feed_url     = "[[=XML(get_feed_url)]]";
-  let add_story_url    = "[[=XML(add_story_url)]]";
-  let add_comment_url  = "[[=XML(add_comment_url)]]";
-  let get_comments_url = "[[=XML(get_comments_url)]]";
+  let get_feed_url       = "[[=XML(get_feed_url)]]";
+  let add_story_url      = "[[=XML(add_story_url)]]";
+  let add_comment_url    = "[[=XML(add_comment_url)]]";
+  let get_comments_url   = "[[=XML(get_comments_url)]]";
+
+  let report_story_url   = "[[=XML(report_story_url)]]";
+  let report_comment_url = "[[=XML(report_comment_url)]]";
+  let get_ismod_url      = "[[=XML(get_ismod_url)]]";
+  let get_rfeed_url      = "[[=XML(get_rfeed_url)]]";
+  let get_rcomments_url  = "[[=XML(get_rcomments_url)]]";
+
+  let mod_approve_url    = "[[=XML(mod_approve_url)]]";
+  let delete_story_url    = "[[=XML(delete_story_url)]]";
+  let delete_comment_url  = "[[=XML(delete_comment_url)]]";
+  
 </script>
 <script src="js/index.js"></script>
 [[end]]

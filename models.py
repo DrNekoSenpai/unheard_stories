@@ -6,6 +6,18 @@ from pydal.validators import *
 # Define a story table. 
 # This will store all the stories shared on the blog site. 
 
+# reported in story is true if 
+    # the story's comments OR 
+    # the story contents are reported
+
+# reported_story is for if the story itself is reported
+
+# reported_comment is for if the comment itself is reported
+
+# mod_approved is set if a mod reviews a reported story/comment
+# and decides that it should NOT be deleted, and no more reports should occur 
+# for that comment / story
+
 db.define_table(
     'story',
     Field('story_id',       'id'),                     # Primary Key
@@ -18,6 +30,9 @@ db.define_table(
     Field('comments',       'list:reference comment'),
     Field('num_comments',   'integer',                 default=0),
     Field('tags',           'list:string'),
+    Field('reported',       'boolean',                 default=False),
+    Field('reported_story', 'boolean',                 default=False),
+    Field('mod_approved',   'boolean',                 default=False),
 )
 
 # most fields will not be editable by the user.
@@ -33,13 +48,15 @@ db.story.num_comments.writable  = False
 
 db.define_table(
     'comment',
-    Field('comment_id',    'id'),                     # Primary Key
-    Field('story_id',      'reference story',         requires=IS_NOT_EMPTY()),
-    Field('content',       'text',                    requires=IS_NOT_EMPTY()),
-    Field('author',                                   requires=IS_NOT_EMPTY()),
-    Field('creation_date', 'datetime',                requires=IS_NOT_EMPTY()),
-    Field('likes',         'integer',                 default=0),
-    Field('replies',       'list:reference comment'),
+    Field('comment_id',       'id'),                     # Primary Key
+    Field('story_id',         'reference story',         requires=IS_NOT_EMPTY()),
+    Field('content',          'text',                    requires=IS_NOT_EMPTY()),
+    Field('author',                                      requires=IS_NOT_EMPTY()),
+    Field('creation_date',    'datetime',                requires=IS_NOT_EMPTY()),
+    Field('likes',            'integer',                 default=0),
+    Field('replies',          'list:reference comment'),
+    Field('reported_comment', 'boolean',                 default=False),
+    Field('mod_approved',     'boolean',                 default=False),
 )
 
 # Most fields date not be editable by the user.
