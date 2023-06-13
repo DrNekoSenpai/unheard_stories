@@ -2,7 +2,6 @@
 
 <!-- vue access div -->
 <div class="section" id="vue-target">
-
   <!-- add story html toggle block -->
   <div v-if="add_mode" class="container block">
     <!-- Title Input Field -->
@@ -84,6 +83,20 @@
     <div class="block">
       <div class="box">{{view_content}}</div>
     </div>
+    <!-- Like button -->
+    <div class="block">
+      <div class="level is-mobile">
+        <div class="level-left">
+          <a class="level-item" aria-label="like" @click="like(comment)">
+            <span class="icon is-small">
+              <i class="fa fa-heart"></i>
+            </span>
+            <!-- likes count -->
+            <span class="ml-1">{{view_likes}}</span>
+          </a>
+        </div>
+      </div>
+    </div>
     <!-- report story button -->
     <div class="field">
       <div class="control">
@@ -109,9 +122,7 @@
             <span class="level-item">{{comment.creation_date}}</span>
           </div>
         </nav>
-        <div class="content">
-          {{comment.content}}
-        </div>
+        <div class="content">{{comment.content}}</div>
         <nav class="level is-mobile">
           <div class="level-left">
             <!-- like button -->
@@ -124,16 +135,24 @@
             </a>
             <!-- reply icon -->
             <!-- clicking the reply button should open up a text box -->
-            <a class="level-item" aria-label="reply" 
-            @click="set_reply_mode(post)">
-              <span class="icon is-small" >
+            <a
+              class="level-item"
+              aria-label="reply"
+              @click="set_reply_mode(post)"
+            >
+              <span class="icon is-small">
                 <i class="fa fa-reply" aria-hidden="true"></i>
               </span>
               <!-- replies count -->
-              <span class="ml-1">{{comment.replies}}</span> <!-- might cause problems -->
+              <span class="ml-1">{{comment.replies}}</span>
+              <!-- might cause problems -->
             </a>
             <!-- report comment button -->
-            <a class="level-item" aria-label="report" @click="report_comment(comment.comment_id)">
+            <a
+              class="level-item"
+              aria-label="report"
+              @click="report_comment(comment.comment_id)"
+            >
               <span class="icon is-small">
                 <i class="fa fa-warning"></i>
               </span>
@@ -172,7 +191,13 @@
     <div class="title">Unheard Stories</div>
     <div class="field">
       <p class="control has-icons-right">
-        <input class="input" type="text" placeholder="Search stories" v-model="search" @input="get_feed(search)">
+        <input
+          class="input"
+          type="text"
+          placeholder="Search stories"
+          v-model="search"
+          @input="get_feed(search)"
+        />
         <span class="icon is-small is-right is-clickable" @click="reset_search">
           <i class="fa fa-times-circle"></i>
         </span>
@@ -199,8 +224,11 @@
 
               <div class="column is-1">
                 <!-- view button -->
-                <a class="button" @click="view(story._idx)" 
-                :class="{'is-link': !ismod || !report_view, 'is-danger': ismod && report_view}">
+                <a
+                  class="button"
+                  @click="view(story._idx)"
+                  :class="{'is-link': !ismod || !report_view, 'is-danger': ismod && report_view}"
+                >
                   <span class="icon"><i class="fa fa-fw fa-eye"></i></span>
                 </a>
               </div>
@@ -224,28 +252,26 @@
         <span>View Reports</span>
       </a>
     </div>
-
   </div>
 </div>
 
 [[block page_scripts]]
 <!-- This passes the python controller actions to the js -->
 <script>
-  let get_feed_url       = "[[=XML(get_feed_url)]]";
-  let add_story_url      = "[[=XML(add_story_url)]]";
-  let add_comment_url    = "[[=XML(add_comment_url)]]";
-  let get_comments_url   = "[[=XML(get_comments_url)]]";
+  let get_feed_url = "[[=XML(get_feed_url)]]";
+  let add_story_url = "[[=XML(add_story_url)]]";
+  let add_comment_url = "[[=XML(add_comment_url)]]";
+  let get_comments_url = "[[=XML(get_comments_url)]]";
 
-  let report_story_url   = "[[=XML(report_story_url)]]";
+  let report_story_url = "[[=XML(report_story_url)]]";
   let report_comment_url = "[[=XML(report_comment_url)]]";
-  let get_ismod_url      = "[[=XML(get_ismod_url)]]";
-  let get_rfeed_url      = "[[=XML(get_rfeed_url)]]";
-  let get_rcomments_url  = "[[=XML(get_rcomments_url)]]";
+  let get_ismod_url = "[[=XML(get_ismod_url)]]";
+  let get_rfeed_url = "[[=XML(get_rfeed_url)]]";
+  let get_rcomments_url = "[[=XML(get_rcomments_url)]]";
 
-  let mod_approve_url    = "[[=XML(mod_approve_url)]]";
-  let delete_story_url    = "[[=XML(delete_story_url)]]";
-  let delete_comment_url  = "[[=XML(delete_comment_url)]]";
-  
+  let mod_approve_url = "[[=XML(mod_approve_url)]]";
+  let delete_story_url = "[[=XML(delete_story_url)]]";
+  let delete_comment_url = "[[=XML(delete_comment_url)]]";
 </script>
 <script src="js/index.js"></script>
 [[end]]

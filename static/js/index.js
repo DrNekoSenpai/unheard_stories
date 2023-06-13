@@ -36,6 +36,7 @@ let init = (app) => {
         view_content:       "",
         view_author:        "",
         view_date:          "",
+        view_likes:         -1,
         view_num_reports:   -1,
 
         // mod vars
@@ -95,6 +96,7 @@ let init = (app) => {
         app.vue.view_content        = app.vue.feed[_idx].content;
         app.vue.view_author         = app.vue.feed[_idx].author;
         app.vue.view_date           = app.vue.feed[_idx].creation_date;
+        app.vue.view_likes          = app.vue.feed[_idx].likes;
         app.vue.view_num_reports    = app.vue.feed[_idx].num_reports;
 
         // get comment list for viewing
@@ -138,6 +140,10 @@ let init = (app) => {
             app.vue.add_content = ""; // clear input fields
             app.get_comments() // refresh comments dynamically
         }).catch(() => {console.error("DEAD ADD_COMMENT");})
+    };
+
+    app.like_post = () =>{
+
     };
 
     // app.addTag = () => {
