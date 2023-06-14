@@ -2,6 +2,23 @@
 
 <!-- vue access div -->
 <div class="section" id="vue-target">
+
+  <!-- popup toggle block -->
+  <div v-if="popup_mode">
+    <label class="label">Thank you for your report</label>
+
+    <input
+          type="submit"
+          @click="close_popup()"
+          value="Back"
+          class="button is-warning"
+        />
+
+  </div>
+
+  <!-- entire site toggle block -->
+  <div v-if="!popup_mode">
+
   <!-- add story html toggle block -->
   <div v-if="add_mode" class="container block">
     <!-- Title Input Field -->
@@ -253,6 +270,7 @@
       </a>
     </div>
   </div>
+</div>
 </div>
 
 [[block page_scripts]]

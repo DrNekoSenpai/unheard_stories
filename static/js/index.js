@@ -12,6 +12,8 @@ let init = (app) => {
         view_mode:  false,
         mod_view:   false,
 
+        popup_mode: false,
+
         // search variables
         search:         "",
         search_results: [],
@@ -186,7 +188,7 @@ let init = (app) => {
             story_id:       app.vue.view_id,
         }).then((r) => {
         
-            // TODO: set view to thank you for report view
+            app.open_popup();
 
             console.log("reported", app.vue.view_title,);
 
@@ -200,7 +202,7 @@ let init = (app) => {
             comment_id:       comment_id, // passed in
         }).then((r) => {
         
-            // TODO: set view to thank you for report view
+            app.open_popup();
 
             console.log("reported comment", comment_id);
             
@@ -263,11 +265,12 @@ let init = (app) => {
     app.delete_comment  = () => { // TODO
     }
 
-    app.report_popup    = () => { // TODO
+    app.open_popup    = () => {
+        app.vue.popup_mode = true;
+    }
 
-        // idea for the pop-up is to just have another html toggle with 
-        // a thanks for the report message and a back button
-        // that just toggles off the popup toggle variable
+    app.close_popup = () => {
+        app.vue.popup_mode = false;
     }
 
     
@@ -304,7 +307,8 @@ let init = (app) => {
         delete_comment:     app.delete_comment,
 
         // misc
-        report_popup:       app.report_popup,
+        open_popup:       app.open_popup,
+        close_popup:      app.close_popup,
 
 
     };
