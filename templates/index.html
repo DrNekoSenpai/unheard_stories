@@ -189,7 +189,8 @@
             </a>
 
             <!-- approve comment button -->
-            <a class="level-item"
+            <a v-if="ismod && report_view && comment.reported_comment " 
+            class="level-item"
             aria-label="report"
             @click="approve_comment(comment.comment_id)">
             <span class="icon is-small is-success">
@@ -198,7 +199,8 @@
           </a>
 
           <!-- delete comment button -->
-          <a class="level-item"
+          <a v-if="ismod && report_view && comment.reported_comment" 
+          class="level-item"
           aria-label="report"
           @click="delete_comment(comment.comment_id)">
             <span class="icon is-small is-success">

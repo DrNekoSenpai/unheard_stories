@@ -143,6 +143,10 @@ def get_reports():
 @action('approve_story', method="POST")
 @action.uses(db, auth.user, url_signer)
 def approve_story():
+
+    if (not ismod()):
+        return "insufficent permissions"
+
     # mark story as approved, remove reported_story bool
     story_id   = request.json.get('story_id')
     db(db.story.story_id == story_id).update(
@@ -160,6 +164,10 @@ def approve_story():
 @action('approve_comment', method="POST")
 @action.uses(db, auth.user, url_signer)
 def approve_comment():
+
+    if (not ismod()):
+        return "insufficent permissions"
+
     # mark comment as approved, and no longer reported
     story_id   = request.json.get('story_id')
     comment_id = request.json.get('comment_id')
@@ -182,6 +190,10 @@ def approve_comment():
 @action('delete_story', method="POST")
 @action.uses(db, auth.user, url_signer)
 def delete_story():
+
+    if (not ismod()):
+        return "insufficent permissions"
+
     # delete story without remorse
     story_id   = request.json.get('story_id')
     db(db.story.story_id == story_id).delete()
@@ -190,6 +202,10 @@ def delete_story():
 @action('delete_comment', method="POST")
 @action.uses(db, auth.user, url_signer)
 def delete_comment():
+
+    if (not ismod()):
+        return "insufficent permissions"
+
     story_id   = request.json.get('story_id')
     comment_id = request.json.get('comment_id')
     db(db.comment.comment_id == comment_id).delete()
