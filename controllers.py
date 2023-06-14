@@ -33,8 +33,10 @@ def index():
         get_rfeed_url       =URL('get_rfeed',       signer=url_signer),
         get_rcomments_url   =URL('get_rcomments',   signer=url_signer),
         
+        approve_story_url   =URL('approve_story',   signer=url_signer),
+        approve_comment_url =URL('approve_comment', signer=url_signer),
+
         #TODO functions
-        mod_approve_url     =URL('mod_approve',     signer=url_signer),
         delete_story_url    =URL('delete_story',    signer=url_signer),
         delete_comment_url  =URL('delete_comment',  signer=url_signer),
     )
@@ -138,45 +140,43 @@ def get_reports():
     comments = db((db.comment.story_id == story_id) & (db.comment.reported_comment == True)).select().as_list()
     return dict(comments=comments[::-1]) # return reversed list
 
-# untested, probably doesn't work
-@action('mod_approve', method="POST")
+@action('approve_story', method="POST")
 @action.uses(db, auth.user, url_signer)
-def mod_approve():
-    # TODO: finish / test
+def approve_story():
+    # mark story as approved, remove reported_story bool
+    story_id   = request.json.get('story_id')
+    db(db.story.story_id == story_id).update(
+        mod_approved    =True, 
+        reported_story  =False)
 
-    # use to decide if approving a comment or story
-    obj_type   = request.json.get('obj_type')
+    # check if any other comments in the story are reported
+    comments = db((db.comment.story_id == story_id) & 
+    (db.comment.reported_comment == True)).select().as_list()
+    # if not, remove reported bool from story
+    if (comments == []):
+        db(db.story.story_id == story_id).update(reported = False)
+    return "ok"
 
-    # story case, simple: just unamrk report, mark as approved
-    if (obj_type == "story"):
+@action('approve_comment', method="POST")
+@action.uses(db, auth.user, url_signer)
+def approve_comment():
+    # mark comment as approved, and no longer reported
+    story_id   = request.json.get('story_id')
+    comment_id = request.json.get('comment_id')
+    db(db.comment.comment_id == comment_id).update(
+        mod_approved     =True, 
+        reported_comment =False)
 
-        story_id   = request.json.get('obj_id') # just need story
-
-        db(db.story.story_id == story_id).update(
-            mod_approved    =True, 
-            reported_story  =False)
-
-    # comment case, less simple, unmark/mark specific comment
-    elif (obj_type == "comment"):
-
-        story_id   = request.json.get('obj_id') # need story and comment
-        comment_id = request.json.get('comment_id')
-
-        db(db.comment.comment_id == comment_id).update(
-            mod_approved    =True, 
-            reported        =False)
-
-        # check if any other comments in the story are reported
-        comments = db((db.comment.story_id == story_id) & 
-        (db.comment.reported_comment == False)).select().as_list()
-
-        if (comments == []):
-
-            # check if the story itself is reported
-            story = db(db.story.story_id == story_id).select.as_list()[0]
-            if (story.get('reported_story') == False):
-                db(db.story.story_id == story_id).update(reported = False)
-        
+    # check if any other comments in the story are reported
+    comments = db((db.comment.story_id == story_id) & 
+    (db.comment.reported_comment == True)).select().as_list()
+    # if not
+    if (comments == []):
+        # check if the story itself is reported
+        story = db(db.story.story_id == story_id).select().as_list()[0]
+        # if not, set whole story not not reported
+        if (story.get('reported_story') == False):
+            db(db.story.story_id == story_id).update(reported = False)
     return "ok"
 
 @action('delete_story', method="POST")

@@ -40,6 +40,7 @@ let init = (app) => {
         view_date:          "",
         view_likes:         -1,
         view_num_reports:   -1,
+        view_reported_story: false,
 
         // mod vars
         ismod: false,
@@ -100,6 +101,7 @@ let init = (app) => {
         app.vue.view_date           = app.vue.feed[_idx].creation_date;
         app.vue.view_likes          = app.vue.feed[_idx].likes;
         app.vue.view_num_reports    = app.vue.feed[_idx].num_reports;
+        app.vue.view_reported_story = app.vue.feed[_idx].reported_story;
 
         // get comment list for viewing
         if (!app.vue.ismod || !app.vue.report_view)
@@ -187,11 +189,8 @@ let init = (app) => {
         axios.post(report_story_url, {
             story_id:       app.vue.view_id,
         }).then((r) => {
-        
             app.open_popup();
-
             console.log("reported", app.vue.view_title,);
-
         }).catch(() => {console.error("DEAD REPORT_STORY");})
     }
 
@@ -201,12 +200,8 @@ let init = (app) => {
             story_id:         app.vue.view_id,
             comment_id:       comment_id, // passed in
         }).then((r) => {
-        
             app.open_popup();
-
             console.log("reported comment", comment_id);
-            
-
         }).catch(() => {console.error("DEAD REPORT_COMMENT");})
     }
 
@@ -238,25 +233,29 @@ let init = (app) => {
             app.vue.ismod = r.data.ismod;
             console.log("ismod:", app.vue.ismod);
         })
-        .catch(() => {
-            console.error("DEAD ISMOD");
-        });
+        .catch(() => {console.error("DEAD ISMOD");});
     }
 
-    app.mod_approve = (id, obj_type) => { // TODO
-        // untested, in progress, probably doesn't work
-        axios.post(mod_approve_url, {
-            obj_type:   type,
-            story_id:   story_id,
+    app.approve_story = () => {
+        axios.post(approve_story_url, {
+            story_id:   app.vue.view_id,
+        }).then((r) => {
+            console.log("approved", app.vue.view_title);
+            app.get_rfeed(); // refresh reported feed
+            })
+        .catch(() => {console.error("DEAD APPROVE_STORY");});
+    }
+
+    app.approve_comment = (comment_id) => {
+        axios.post(approve_comment_url, {
+            story_id:   app.vue.view_id,
             comment_id: comment_id,
-        })
-        .then((r) => {
-            app.vue.ismod = r.data.ismod;
-            console.log("ismod:", app.vue.ismod);
-        })
-        .catch(() => {
-            console.error("DEAD MOD_APPROVE");
-        });
+        }).then((r) => {
+            console.log("approved a comment on", app.vue.view_title);
+            app.get_rcomments();
+            app.get_rfeed();
+            })
+        .catch(() => {console.error("DEAD APPROVE_COMMENT");});
     }
 
     app.delete_story    = () => { // TODO
@@ -302,7 +301,9 @@ let init = (app) => {
         get_ismod:          app.get_ismod,
 
         // TODO functions
-        mod_approve:        app.mod_approve,
+        approve_story:      app.approve_story,
+        approve_comment:    app.approve_comment,
+
         delete_story:       app.delete_story,
         delete_comment:     app.delete_comment,
 
