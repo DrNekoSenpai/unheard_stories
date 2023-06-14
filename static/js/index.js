@@ -258,10 +258,29 @@ let init = (app) => {
         .catch(() => {console.error("DEAD APPROVE_COMMENT");});
     }
 
-    app.delete_story    = () => { // TODO
+    app.delete_story    = () => {
+        axios.post(delete_story_url, {
+            story_id:   app.vue.view_id,
+        }).then((r) => {
+            console.log("deleted", app.vue.view_title);
+            app.get_rfeed(); // refresh reported feed
+
+            app.set_feed_mode(); // go back to feed, because the story is gone
+            })
+        .catch(() => {console.error("DEAD DELETE_STORY");});
     }
 
-    app.delete_comment  = () => { // TODO
+    app.delete_comment  = (comment_id) => {
+        axios.post(delete_comment_url, {
+            story_id:   app.vue.view_id,
+            comment_id: comment_id,
+        }).then((r) => {
+            console.log("deleted comment on ", app.vue.view_title);
+            app.get_rcomments();
+            app.get_rfeed();
+            app.set_feed_mode(); // go back to feed, because the story is gone
+            })
+        .catch(() => {console.error("DEAD DELETE_STORY");});
     }
 
     app.open_popup    = () => {

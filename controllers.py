@@ -182,11 +182,26 @@ def approve_comment():
 @action('delete_story', method="POST")
 @action.uses(db, auth.user, url_signer)
 def delete_story():
-    # TODO
+    # delete story without remorse
+    story_id   = request.json.get('story_id')
+    db(db.story.story_id == story_id).delete()
     return "ok"
 
 @action('delete_comment', method="POST")
 @action.uses(db, auth.user, url_signer)
-def delete_story():
-    # TODO
+def delete_comment():
+    story_id   = request.json.get('story_id')
+    comment_id = request.json.get('comment_id')
+    db(db.comment.comment_id == comment_id).delete()
+
+    # check if any other comments in the story are reported
+    comments = db((db.comment.story_id == story_id) & 
+    (db.comment.reported_comment == True)).select().as_list()
+    # if not
+    if (comments == []):
+        # check if the story itself is reported
+        story = db(db.story.story_id == story_id).select().as_list()[0]
+        # if not, set whole story to not reported
+        if (story.get('reported_story') == False):
+            db(db.story.story_id == story_id).update(reported = False)
     return "ok"
