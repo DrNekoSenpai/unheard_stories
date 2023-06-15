@@ -195,7 +195,7 @@ let init = (app) => {
             parent_id: app.vue.reply_parent,
         }).then((r) => {
             console.log("getting replies to", app.vue.reply_parent);
-            app.vue.replies = r.data.replies;
+            app.vue.replies = enumerate(r.data.replies);
         }).catch(() => {console.error("DEAD GET_REPLIES");})
     }
 
@@ -361,6 +361,16 @@ let init = (app) => {
         }).catch(() => {console.error("DEAD SET_COMMENT_LIKE");})
     }
     
+    app.set_reply_like = (comment) => {
+        axios.post(set_comment_like_url, {
+            comment_id: comment.comment_id,
+            likes:      comment.likes,
+        }).then((r) => {
+            console.log("set_comment_like");
+            app.vue.replies[comment._idx].likes = comment.likes + r.data.r;
+        }).catch(() => {console.error("DEAD SET_REPLY_LIKE");})
+    }
+
     app.methods = {
         // mode switch methods
         set_feed_mode:      app.set_feed_mode,
@@ -404,6 +414,7 @@ let init = (app) => {
         // like functions
         set_story_like:     app.set_story_like,
         set_comment_like:   app.set_comment_like,
+        set_reply_like:     app.set_reply_like,
     };
     
     app.vue = new Vue({
