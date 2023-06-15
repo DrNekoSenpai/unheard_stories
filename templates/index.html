@@ -340,22 +340,28 @@
           </div>
         </table>
       </div>
-      <a class="button is-success" @click="set_add_mode()">
-        <span class="icon"><i class="fa fa-plus"></i></span>
-        <span>Submit a story</span>
-      </a>
-
+      <div class="block">
+        <a class="button is-success" @click="set_add_mode()">
+          <span class="icon"><i class="fa fa-plus"></i></span>
+          <span>Submit a story</span>
+        </a>
+      </div>
       <!-- reports toggle buttons -->
       <div v-if="ismod">
-
+        
+        
         <a class="field">
-          <a class="button is-link" @click="get_feed()">
-            <span>View Feed</span>
-          </a>
+          <div class="block">
+            <a class="button is-link" @click="get_feed()">
+              <span>View Feed</span>
+            </a>
+          </div>
 
-          <a class="button is-danger" @click="get_rfeed()">
-            <span>View Reports</span>
-          </a>
+          <div class="block">
+            <a class="button is-danger" @click="get_rfeed()">
+              <span>View Reports</span>
+            </a>
+          </div>
         </a>
 
       </div>
