@@ -48,19 +48,31 @@ db.story.num_comments.writable  = False
 
 db.define_table(
     'comment',
-    Field('comment_id',       'id'),                     # Primary Key
-    Field('story_id',         'reference story',         requires=IS_NOT_EMPTY()),
-    Field('content',          'text',                    requires=IS_NOT_EMPTY()),
-    Field('author',                                      requires=IS_NOT_EMPTY()),
-    Field('creation_date',    'datetime',                requires=IS_NOT_EMPTY()),
-    Field('likes',            'integer',                 default=0),
+    Field('comment_id',       'id'),                # Primary Key
+    Field('story_id',         'reference story',    requires=IS_NOT_EMPTY()),
+    Field('content',          'text',               requires=IS_NOT_EMPTY()),
+    Field('author',                                 requires=IS_NOT_EMPTY()),
+    Field('creation_date',    'datetime',           requires=IS_NOT_EMPTY()),
+    Field('likes',            'integer',            default=0),
     Field('parent_id',        'reference comment'),
-    Field('reply_count',      'integer',                 default=0),
-    Field('reported_comment', 'boolean',                 default=False),
-    Field('mod_approved',     'boolean',                 default=False),
+    Field('reply_count',      'integer',            default=0),
+    Field('reported_comment', 'boolean',            default=False),
+    Field('mod_approved',     'boolean',            default=False),
 )
 
-# Most fields date not be editable by the user.
+db.define_table(
+    'story_like',
+    Field('story_id',         'reference story'),
+    Field('username',                               requires=IS_NOT_EMPTY()),
+)
+
+db.define_table(
+    'comment_like',
+    Field('comment_id',       'reference comment'),
+    Field('username',                               requires=IS_NOT_EMPTY()),
+)
+
+# Most fields are not be editable by the user.
 db.comment.comment_id.writable      = False
 db.comment.creation_date.writable   = False
 db.comment.likes.writable           = False

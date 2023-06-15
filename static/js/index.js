@@ -199,10 +199,6 @@ let init = (app) => {
         }).catch(() => {console.error("DEAD GET_REPLIES");})
     }
 
-    app.like_post = () =>{
-
-    };
-
     // app.addTag = () => {
     //     let tag = app.vue.currentTag.trim();
     //     if (tag && app.vue.tags.indexOf(tag) < 0) {
@@ -344,6 +340,26 @@ let init = (app) => {
         app.vue.popup_mode = false;
     }
 
+    app.set_story_like = () => {
+        axios.post(set_story_like_url, {
+            story_id:   app.vue.view_id,
+            likes:      app.vue.view_likes,
+        }).then((r) => {
+            console.log("set_story_like");
+            app.vue.view_likes = app.vue.view_likes + r.data.r
+            app.get_feed();
+        }).catch(() => {console.error("DEAD SET_STORY_LIKE");})
+    }
+
+    app.set_comment_like = (comment) => {
+        axios.post(set_comment_like_url, {
+            comment_id: comment.comment_id,
+            likes:      comment.likes,
+        }).then((r) => {
+            console.log("set_comment_like");
+            app.vue.comments[comment._idx].likes = comment.likes + r.data.r;
+        }).catch(() => {console.error("DEAD SET_COMMENT_LIKE");})
+    }
     
     app.methods = {
         // mode switch methods
@@ -385,7 +401,9 @@ let init = (app) => {
         open_popup:         app.open_popup,
         close_popup:        app.close_popup,
 
-
+        // like functions
+        set_story_like:     app.set_story_like,
+        set_comment_like:   app.set_comment_like,
     };
     
     app.vue = new Vue({

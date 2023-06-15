@@ -22,29 +22,33 @@ def index():
     return dict(
         url_signer          =url_signer,
         
-        # get/set for stories and comments
-        get_feed_url        =URL('get_feed',        signer=url_signer),
-        get_comments_url    =URL('get_comments',    signer=url_signer),
-        add_story_url       =URL('add_story',       signer=url_signer),
-        add_comment_url     =URL('add_comment',     signer=url_signer),
+        # get/set for stories/comments/replies
+        get_feed_url            =URL('get_feed',            signer=url_signer),
+        get_comments_url        =URL('get_comments',        signer=url_signer),
+        add_story_url           =URL('add_story',           signer=url_signer),
+        add_comment_url         =URL('add_comment',         signer=url_signer),
 
-        add_reply_url       =URL('add_reply',       signer=url_signer),
-        get_replies_url     =URL('get_replies',     signer=url_signer),
+        add_reply_url           =URL('add_reply',           signer=url_signer),
+        get_replies_url         =URL('get_replies',         signer=url_signer),
 
-        # report functions
-        report_story_url    =URL('report_story',    signer=url_signer),
-        report_comment_url  =URL('report_comment',  signer=url_signer),
+        # user report functions  
+        report_story_url        =URL('report_story',        signer=url_signer),
+        report_comment_url      =URL('report_comment',      signer=url_signer),
 
-        # mod misc
-        get_ismod_url       =URL('get_ismod',       signer=url_signer),
-        get_rfeed_url       =URL('get_rfeed',       signer=url_signer),
-        get_rcomments_url   =URL('get_rcomments',   signer=url_signer),
-        
-        # mod actions
-        approve_story_url   =URL('approve_story',   signer=url_signer),
-        approve_comment_url =URL('approve_comment', signer=url_signer),
-        delete_story_url    =URL('delete_story',    signer=url_signer),
-        delete_comment_url  =URL('delete_comment',  signer=url_signer),
+        # mod misc      
+        get_ismod_url           =URL('get_ismod',           signer=url_signer),
+        get_rfeed_url           =URL('get_rfeed',           signer=url_signer),
+        get_rcomments_url       =URL('get_rcomments',       signer=url_signer),
+
+        # mod actions       
+        approve_story_url       =URL('approve_story',       signer=url_signer),
+        approve_comment_url     =URL('approve_comment',     signer=url_signer),
+        delete_story_url        =URL('delete_story',        signer=url_signer),
+        delete_comment_url      =URL('delete_comment',      signer=url_signer),
+
+        # like function
+        set_story_like_url      =URL('set_story_like',      signer=url_signer),
+        set_comment_like_url    =URL('set_comment_like',    signer=url_signer),
     )
 
 @action('get_feed', method="POST")
@@ -255,3 +259,46 @@ def delete_comment():
         if (story.get('reported_story') == False):
             db(db.story.story_id == story_id).update(reported = False)
     return "ok"
+
+@action('set_story_like', method="POST")
+@action.uses(db, auth.user, url_signer)
+def set_story_like():
+    username    = auth.current_user.get('username')
+    story_id    = request.json.get('story_id')
+    likes       = request.json.get('likes')
+
+    like = db((db.story_like.username == username) & 
+    (db.story_like.story_id == story_id)).select().as_list()
+
+    if (like == []):
+        db.story_like.insert(username=username, story_id=story_id)
+        db(db.story.story_id == story_id).update(likes=likes + 1)
+        return dict(r= 1)
+    else:
+        db((db.story_like.username == username) 
+        & (db.story_like.story_id == story_id)).delete()
+
+        db(db.story.story_id == story_id).update(likes=likes - 1)
+        return dict(r= -1)
+
+@action('set_comment_like', method="POST")
+@action.uses(db, auth.user, url_signer)
+def set_comment_like():
+
+    username    = auth.current_user.get('username')
+    comment_id  = request.json.get('comment_id')
+    likes       = request.json.get('likes')
+
+    like = db((db.comment_like.username == username) & 
+    (db.comment_like.comment_id == comment_id)).select().as_list()
+
+    if (like == []):
+        db.comment_like.insert(username=username, comment_id=comment_id)
+        db(db.comment.comment_id == comment_id).update(likes=likes + 1)
+        return dict(r= 1)
+    else:
+        db((db.comment_like.username == username) 
+        & (db.comment_like.comment_id == comment_id)).delete()
+
+        db(db.comment.comment_id == comment_id).update(likes=likes - 1)
+        return dict(r= -1)

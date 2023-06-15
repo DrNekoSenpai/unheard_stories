@@ -6,21 +6,16 @@
   <!-- popup toggle block -->
   <div v-if="popup_mode">
     <label class="label">Thank you for your report</label>
-    <input
-      type="submit"
-      @click="close_popup()"
-      value="Back"
-      class="button is-warning"
-    />
+    <input type="submit" @click="close_popup()" value="Back" class="button is-warning" />
   </div>
 
   <!-- entire site toggle block -->
   <div v-if="!popup_mode">
 
-    
+
     <!-- reply view toggle block -->
     <div v-if="reply_mode">
-    
+
       <!-- Reply parent post -->
       <div class="box">
         <nav class="level is-mobile">
@@ -42,12 +37,12 @@
           {{reply_content}}
         </div>
       </div>
-    
+
       <div class="field">
         <textarea class="textarea" placeholder="What's on your mind?" v-model="add_content" rows="2">
                 </textarea>
       </div>
-    
+
       <!-- Reply Button -->
       <div class="field">
         <div class="control">
@@ -56,7 +51,7 @@
           </button>
         </div>
       </div>
-    
+
       <!-- other replies list -->
       <div v-for="reply in replies" class="block">
         <div class="box">
@@ -77,7 +72,7 @@
           <nav class="level is-mobile">
             <div class="level-left">
               <!-- like button -->
-              <a class="level-item" aria-label="like" @click="like(reply)">
+              <a class="level-item" aria-label="like" @click="set_comment_like(reply)">
                 <span class="icon is-small">
                   <i class="fa fa-heart"></i>
                 </span>
@@ -94,48 +89,48 @@
                 <span class="ml-1">{{reply.reply_count}}</span>
                 <!-- might cause problems -->
               </a>
-    
+
               <!-- report comment button -->
               <a class="level-item" aria-label="report" @click="report_comment(reply.comment_id)">
                 <span class="icon is-small">
                   <i class="fa fa-warning"></i>
                 </span>
               </a>
-    
+
             </div>
         </div>
       </div>
-    
+
       <!-- back button -->
       <div class="field">
         <div class="control">
           <input type="submit" @click="set_view_mode()" value="Back" class="button is-warning" />
         </div>
       </div>
-    
+
     </div>
 
 
-  <!-- add story html toggle block -->
-  <div v-if="add_mode" class="container block">
-    <!-- Title Input Field -->
-    <div class="field">
-      <label class="label">Title:</label>
-      <div class="control">
-        <input type="text" v-model="add_title" class="input" />
+    <!-- add story html toggle block -->
+    <div v-if="add_mode" class="container block">
+      <!-- Title Input Field -->
+      <div class="field">
+        <label class="label">Title:</label>
+        <div class="control">
+          <input type="text" v-model="add_title" class="input" />
+        </div>
       </div>
-    </div>
 
-    <!-- Contents Input Field -->
-    <div class="field">
-      <label class="label">Contents:</label>
-      <div class="control">
-        <textarea v-model="add_content" class="textarea"></textarea>
+      <!-- Contents Input Field -->
+      <div class="field">
+        <label class="label">Contents:</label>
+        <div class="control">
+          <textarea v-model="add_content" class="textarea"></textarea>
+        </div>
       </div>
-    </div>
 
-    <!-- Tag Input Field -->
-    <!-- <div class="field">
+      <!-- Tag Input Field -->
+      <!-- <div class="field">
       <label class="label">Tags:</label>
       <div class="control">
           <input
@@ -147,8 +142,8 @@
       </div>
     </div> -->
 
-    <!-- Tag Display Area -->
-    <!-- <div class="tags">
+      <!-- Tag Display Area -->
+      <!-- <div class="tags">
       <span 
           class="tag is-primary" 
           v-for="(tag, index) in add_tags" 
@@ -162,272 +157,239 @@
       </span>
     </div> -->
 
-    <!-- Submit Button -->
-    <div class="field">
-      <div class="control">
-        <input
-          type="submit"
-          @click="add_story"
-          value="Add"
-          class="button is-primary"
-        />
-        <input
-          type="submit"
-          @click="set_feed_mode()"
-          value="Back"
-          class="button is-warning"
-        />
-      </div>
-    </div>
-  </div>
-
-  <!-- view story html toggle block -->
-  <div v-if="view_mode" class="container block">
-    <!-- Title -->
-    <div class="block">
-      <div class="title is-2">{{view_title}}</div>
-    </div>
-    <!-- details -->
-    <div class="block">
-      <div class="subtitle is-6">
-        by {{view_author}}, Created on {{view_date}}
-      </div>
-    </div>
-    <!-- content -->
-    <div class="block">
-      <div class="box">{{view_content}}</div>
-    </div>
-    <!-- Like button -->
-    <div class="block">
-      <div class="level is-mobile">
-        <div class="level-left">
-          <a class="level-item" aria-label="like" @click="like(comment)">
-            <span class="icon is-small">
-              <i class="fa fa-heart"></i>
-            </span>
-            <!-- likes count -->
-            <span class="ml-1">{{view_likes}}</span>
-          </a>
+      <!-- Submit Button -->
+      <div class="field">
+        <div class="control">
+          <input type="submit" @click="add_story" value="Add" class="button is-primary" />
+          <input type="submit" @click="set_feed_mode()" value="Back" class="button is-warning" />
         </div>
       </div>
     </div>
 
-    <!-- big buttons under story contents -->
-    <div class="field">
-      <div class="control">
-
-        <!-- report story button -->
-        <button class="button is-danger" @click="report_story()">
-          Report post
-        </button>
-
-        <!-- approve story button -->
-        <button v-if="ismod && report_view && view_reported_story" 
-        class="button is-success" 
-        @click="approve_story()">
-          Approve Post
-        </button>
-
-        <!-- delete story button -->
-        <button v-if="ismod && report_view && view_reported_story"
-        class="button is-danger"
-        @click="delete_story()">
-          Delete Post
-        </button>
-
+    <!-- view story html toggle block -->
+    <div v-if="view_mode" class="container block">
+      <!-- Title -->
+      <div class="block">
+        <div class="title is-2">{{view_title}}</div>
       </div>
-    </div>
-
-    <!-- display comments block-->
-    <div v-for="comment in comments" class="block">
-      <div class="box">
-        <nav class="level is-mobile">
+      <!-- details -->
+      <div class="block">
+        <div class="subtitle is-6">
+          by {{view_author}}, Created on {{view_date}}
+        </div>
+      </div>
+      <!-- content -->
+      <div class="block">
+        <div class="box">{{view_content}}</div>
+      </div>
+      <!-- Like button -->
+      <div class="block">
+        <div class="level is-mobile">
           <div class="level-left">
-            <a class="level-item" aria-label="reply">
-              <span class="icon is-small">
-                <i class="fa fa-user"></i>
-              </span>
-              <span class="ml-2">{{comment.author}}</span>
-            </a>
-          </div>
-          <div class="level-right">
-            <span class="level-item">{{comment.creation_date}}</span>
-          </div>
-        </nav>
-        <div class="content">{{comment.content}}</div>
-        <nav class="level is-mobile">
-          <div class="level-left">
-            <!-- like button -->
-            <a class="level-item" aria-label="like" @click="like(comment)">
+            <a class="level-item" aria-label="like" @click="set_story_like()">
               <span class="icon is-small">
                 <i class="fa fa-heart"></i>
               </span>
               <!-- likes count -->
-              <span class="ml-1">{{comment.likes}}</span>
+              <span class="ml-1">{{view_likes}}</span>
             </a>
-            <!-- reply icon -->
-            <!-- clicking the reply button should open up a text box -->
-            <a class="level-item"
-            aria-label="reply"
-            @click="set_reply_mode(comment)">
-              <span class="icon is-small">
-                <i class="fa fa-reply" aria-hidden="true"></i>
-              </span>
-              <!-- replies count -->
-              <span class="ml-1">{{comment.reply_count}}</span>
-            </a>
-            
-            <!-- report comment button -->
-            <a class="level-item"
-            aria-label="report"
-            @click="report_comment(comment.comment_id)">
-              <span class="icon is-small">
-                <i class="fa fa-warning"></i>
-              </span>
-            </a>
-
-            <!-- approve comment button -->
-            <a v-if="ismod && report_view && comment.reported_comment " 
-            class="level-item"
-            aria-label="report"
-            @click="approve_comment(comment.comment_id)">
-            <span class="icon is-small is-success">
-              <i class="fa fa-check"></i>
-            </span>
-          </a>
-
-          <!-- delete comment button -->
-          <a v-if="ismod && report_view && comment.reported_comment" 
-          class="level-item"
-          aria-label="report"
-          @click="delete_comment(comment.comment_id)">
-            <span class="icon is-small is-success">
-              <i class="fa fa-trash"></i>
-            </span>
-          </a>
-
           </div>
-        </nav>
+        </div>
       </div>
-    </div>
 
-    <!-- comment box -->
-    <div class="field">
-      <textarea
-        class="textarea"
-        placeholder="Leave a comment"
-        rows="2"
-        v-model="add_content"
-      ></textarea>
-    </div>
-    <div class="field">
-      <div class="control">
-        <button class="button is-link" @click="add_comment()">Comment</button>
+      <!-- big buttons under story contents -->
+      <div class="field">
+        <div class="control">
+
+          <!-- report story button -->
+          <button class="button is-danger" @click="report_story()">
+            Report post
+          </button>
+
+          <!-- approve story button -->
+          <button v-if="ismod && report_view && view_reported_story" class="button is-success" @click="approve_story()">
+            Approve Post
+          </button>
+
+          <!-- delete story button -->
+          <button v-if="ismod && report_view && view_reported_story" class="button is-danger" @click="delete_story()">
+            Delete Post
+          </button>
+
+        </div>
       </div>
+
+      <!-- display comments block-->
+      <div v-for="comment in comments" class="block">
+        <div class="box">
+          <nav class="level is-mobile">
+            <div class="level-left">
+              <a class="level-item" aria-label="reply">
+                <span class="icon is-small">
+                  <i class="fa fa-user"></i>
+                </span>
+                <span class="ml-2">{{comment.author}}</span>
+              </a>
+            </div>
+            <div class="level-right">
+              <span class="level-item">{{comment.creation_date}}</span>
+            </div>
+          </nav>
+          <div class="content">{{comment.content}}</div>
+          <nav class="level is-mobile">
+            <div class="level-left">
+              <!-- like button -->
+              <a class="level-item" aria-label="like" @click="set_comment_like(comment)">
+                <span class="icon is-small">
+                  <i class="fa fa-heart"></i>
+                </span>
+                <!-- likes count -->
+                <span class="ml-1">{{comment.likes}}</span>
+              </a>
+              <!-- reply icon -->
+              <!-- clicking the reply button should open up a text box -->
+              <a class="level-item" aria-label="reply" @click="set_reply_mode(comment)">
+                <span class="icon is-small">
+                  <i class="fa fa-reply" aria-hidden="true"></i>
+                </span>
+                <!-- replies count -->
+                <span class="ml-1">{{comment.reply_count}}</span>
+              </a>
+
+              <!-- report comment button -->
+              <a class="level-item" aria-label="report" @click="report_comment(comment.comment_id)">
+                <span class="icon is-small">
+                  <i class="fa fa-warning"></i>
+                </span>
+              </a>
+
+              <!-- approve comment button -->
+              <a v-if="ismod && report_view && comment.reported_comment " class="level-item" aria-label="report"
+                @click="approve_comment(comment.comment_id)">
+                <span class="icon is-small is-success">
+                  <i class="fa fa-check"></i>
+                </span>
+              </a>
+
+              <!-- delete comment button -->
+              <a v-if="ismod && report_view && comment.reported_comment" class="level-item" aria-label="report"
+                @click="delete_comment(comment.comment_id)">
+                <span class="icon is-small is-success">
+                  <i class="fa fa-trash"></i>
+                </span>
+              </a>
+
+            </div>
+          </nav>
+        </div>
+      </div>
+
+      <!-- comment box -->
+      <div class="field">
+        <textarea class="textarea" placeholder="Leave a comment" rows="2" v-model="add_content"></textarea>
+      </div>
+      <div class="field">
+        <div class="control">
+          <button class="button is-link" @click="add_comment()">Comment</button>
+        </div>
+      </div>
+
+      <!-- Back Button -->
+      <input type="submit" @click="set_feed_mode()" value="Back" class="button is-warning" />
     </div>
 
-    <!-- Back Button -->
-    <input
-      type="submit"
-      @click="set_feed_mode()"
-      value="Back"
-      class="button is-warning"
-    />
-  </div>
+    <!-- feed html toggle block -->
+    <div v-if="feed_mode" class="container block">
+      <div class="title">Unheard Stories</div>
+      <div class="field">
+        <p class="control has-icons-right">
+          <input class="input" type="text" placeholder="Search stories" v-model="search" @input="get_feed(search)" />
+          <span class="icon is-small is-right is-clickable" @click="reset_search">
+            <i class="fa fa-times-circle"></i>
+          </span>
+        </p>
+      </div>
+      <div class="container">
+        <table class="table is-striped is-fullwidth">
+          <!-- vue feed -->
+          <div v-for="story in feed" class="block">
+            <div class="box">
+              <div class="columns">
+                <div class="column is-11">
+                  <p><b>{{story.title}}</b></p>
+                  <p><i>by {{story.author}}</i></p>
 
-  <!-- feed html toggle block -->
-  <div v-if="feed_mode" class="container block">
-    <div class="title">Unheard Stories</div>
-    <div class="field">
-      <p class="control has-icons-right">
-        <input
-          class="input"
-          type="text"
-          placeholder="Search stories"
-          v-model="search"
-          @input="get_feed(search)"
-        />
-        <span class="icon is-small is-right is-clickable" @click="reset_search">
-          <i class="fa fa-times-circle"></i>
-        </span>
-      </p>
-    </div>
-    <div class="container">
-      <table class="table is-striped is-fullwidth">
-        <!-- vue feed -->
-        <div v-for="story in feed" class="block">
-          <div class="box">
-            <div class="columns">
-              <div class="column is-11">
-                <p><b>{{story.title}}</b></p>
-                <p><i>by {{story.author}}</i></p>
+                  <!-- Display likes, dislikes, number of comments -->
+                  <p>
+                    <span class="icon"><i class="fa fa-fw fa-heart"></i></span>
+                    <span>{{story.likes}}</span>
+                    <span class="icon"><i class="fa fa-fw fa-comments"></i></span>
+                    <span>{{story.num_comments}}</span>
+                  </p>
+                </div>
 
-                <!-- Display likes, dislikes, number of comments -->
-                <p>
-                  <span class="icon"><i class="fa fa-fw fa-heart"></i></span>
-                  <span>{{story.likes}}</span>
-                  <span class="icon"><i class="fa fa-fw fa-comments"></i></span>
-                  <span>{{story.num_comments}}</span>
-                </p>
-              </div>
-
-              <div class="column is-1">
-                <!-- view button -->
-                <a
-                  class="button"
-                  @click="view(story._idx)"
-                  :class="{'is-link': !ismod || !report_view, 'is-danger': ismod && report_view}"
-                >
-                  <span class="icon"><i class="fa fa-fw fa-eye"></i></span>
-                </a>
+                <div class="column is-1">
+                  <!-- view button -->
+                  <a class="button" @click="view(story._idx)"
+                    :class="{'is-link': !ismod || !report_view, 'is-danger': ismod && report_view}">
+                    <span class="icon"><i class="fa fa-fw fa-eye"></i></span>
+                  </a>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </table>
-    </div>
-    <a class="button is-success" @click="set_add_mode()">
-      <span class="icon"><i class="fa fa-plus"></i></span>
-      <span>Submit a story</span>
-    </a>
-
-    <!-- reports toggle buttons -->
-    <div v-if="ismod">
-      <a class="button is-link" @click="get_feed()">
-        <span>View Feed</span>
+        </table>
+      </div>
+      <a class="button is-success" @click="set_add_mode()">
+        <span class="icon"><i class="fa fa-plus"></i></span>
+        <span>Submit a story</span>
       </a>
 
-      <a class="button is-danger" @click="get_rfeed()">
-        <span>View Reports</span>
-      </a>
+      <!-- reports toggle buttons -->
+      <div v-if="ismod">
+
+        <a class="field">
+          <a class="button is-link" @click="get_feed()">
+            <span>View Feed</span>
+          </a>
+
+          <a class="button is-danger" @click="get_rfeed()">
+            <span>View Reports</span>
+          </a>
+        </a>
+
+      </div>
+
     </div>
   </div>
-</div>
 
 </div>
 
 [[block page_scripts]]
 <!-- This passes the python controller actions to the js -->
 <script>
-  let get_feed_url        = "[[=XML(get_feed_url)]]";
-  let add_story_url       = "[[=XML(add_story_url)]]";
-  let add_comment_url     = "[[=XML(add_comment_url)]]";
-  let get_comments_url    = "[[=XML(get_comments_url)]]";
+  let get_feed_url = "[[=XML(get_feed_url)]]";
+  let add_story_url = "[[=XML(add_story_url)]]";
+  let add_comment_url = "[[=XML(add_comment_url)]]";
+  let get_comments_url = "[[=XML(get_comments_url)]]";
 
-  let add_reply_url       = "[[=XML(add_reply_url)]]";
-  let get_replies_url     = "[[=XML(get_replies_url)]]";
+  let add_reply_url = "[[=XML(add_reply_url)]]";
+  let get_replies_url = "[[=XML(get_replies_url)]]";
 
-  let report_story_url    = "[[=XML(report_story_url)]]";
-  let report_comment_url  = "[[=XML(report_comment_url)]]";
-  let get_ismod_url       = "[[=XML(get_ismod_url)]]";
-  let get_rfeed_url       = "[[=XML(get_rfeed_url)]]";
-  let get_rcomments_url   = "[[=XML(get_rcomments_url)]]";
+  let report_story_url = "[[=XML(report_story_url)]]";
+  let report_comment_url = "[[=XML(report_comment_url)]]";
+  let get_ismod_url = "[[=XML(get_ismod_url)]]";
+  let get_rfeed_url = "[[=XML(get_rfeed_url)]]";
+  let get_rcomments_url = "[[=XML(get_rcomments_url)]]";
 
-  let approve_story_url   = "[[=XML(approve_story_url)]]";
+  let approve_story_url = "[[=XML(approve_story_url)]]";
   let approve_comment_url = "[[=XML(approve_comment_url)]]";
 
-  let delete_story_url    = "[[=XML(delete_story_url)]]";
-  let delete_comment_url  = "[[=XML(delete_comment_url)]]";
+  let delete_story_url = "[[=XML(delete_story_url)]]";
+  let delete_comment_url = "[[=XML(delete_comment_url)]]";
+
+  let set_story_like_url = "[[=XML(set_story_like_url)]]";
+  let set_comment_like_url = "[[=XML(set_comment_like_url)]]";
 </script>
 <script src="js/index.js"></script>
 [[end]]
