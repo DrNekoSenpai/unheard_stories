@@ -54,7 +54,8 @@ db.define_table(
     Field('author',                                      requires=IS_NOT_EMPTY()),
     Field('creation_date',    'datetime',                requires=IS_NOT_EMPTY()),
     Field('likes',            'integer',                 default=0),
-    Field('replies',          'list:reference comment'),
+    Field('parent_id',        'reference comment'),
+    Field('reply_count',      'integer',                 default=0),
     Field('reported_comment', 'boolean',                 default=False),
     Field('mod_approved',     'boolean',                 default=False),
 )
@@ -63,6 +64,5 @@ db.define_table(
 db.comment.comment_id.writable      = False
 db.comment.creation_date.writable   = False
 db.comment.likes.writable           = False
-db.comment.replies.writable         = False
 
 db.commit()

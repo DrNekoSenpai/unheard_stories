@@ -17,6 +17,105 @@
   <!-- entire site toggle block -->
   <div v-if="!popup_mode">
 
+    
+    <!-- reply view toggle block -->
+    <div v-if="reply_mode">
+    
+      <!-- Reply parent post -->
+      <div class="box">
+        <nav class="level is-mobile">
+          <div class="level-left">
+            <a class="level-item" aria-label="reply">
+              <span class="icon is-small">
+                <i class="fa fa-user"></i>
+              </span>
+              <span class="ml-2">{{reply_author}}</span>
+            </a>
+          </div>
+          <div class="level-right">
+            <span class="level-item">
+              {{reply_time}}
+            </span>
+          </div>
+        </nav>
+        <div class="content">
+          {{reply_content}}
+        </div>
+      </div>
+    
+      <div class="field">
+        <textarea class="textarea" placeholder="What's on your mind?" v-model="add_content" rows="2">
+                </textarea>
+      </div>
+    
+      <!-- Reply Button -->
+      <div class="field">
+        <div class="control">
+          <button class="button is-link" @click="add_reply()">
+            Reply!
+          </button>
+        </div>
+      </div>
+    
+      <!-- other replies list -->
+      <div v-for="reply in replies" class="block">
+        <div class="box">
+          <nav class="level is-mobile">
+            <div class="level-left">
+              <a class="level-item" aria-label="reply">
+                <span class="icon is-small">
+                  <i class="fa fa-user"></i>
+                </span>
+                <span class="ml-2">{{reply.author}}</span>
+              </a>
+            </div>
+            <div class="level-right">
+              <span class="level-item">{{reply.creation_date}}</span>
+            </div>
+          </nav>
+          <div class="content">{{reply.content}}</div>
+          <nav class="level is-mobile">
+            <div class="level-left">
+              <!-- like button -->
+              <a class="level-item" aria-label="like" @click="like(reply)">
+                <span class="icon is-small">
+                  <i class="fa fa-heart"></i>
+                </span>
+                <!-- likes count -->
+                <span class="ml-1">{{reply.likes}}</span>
+              </a>
+              <!-- reply icon -->
+              <!-- clicking the reply button should open up a text box -->
+              <a class="level-item" aria-label="reply" @click="set_reply_mode(reply)">
+                <span class="icon is-small">
+                  <i class="fa fa-reply" aria-hidden="true"></i>
+                </span>
+                <!-- replies count -->
+                <span class="ml-1">{{reply.reply_count}}</span>
+                <!-- might cause problems -->
+              </a>
+    
+              <!-- report comment button -->
+              <a class="level-item" aria-label="report" @click="report_comment(reply.comment_id)">
+                <span class="icon is-small">
+                  <i class="fa fa-warning"></i>
+                </span>
+              </a>
+    
+            </div>
+        </div>
+      </div>
+    
+      <!-- back button -->
+      <div class="field">
+        <div class="control">
+          <input type="submit" @click="set_view_mode()" value="Back" class="button is-warning" />
+        </div>
+      </div>
+    
+    </div>
+
+
   <!-- add story html toggle block -->
   <div v-if="add_mode" class="container block">
     <!-- Title Input Field -->
@@ -170,13 +269,12 @@
             <!-- clicking the reply button should open up a text box -->
             <a class="level-item"
             aria-label="reply"
-            @click="set_reply_mode(post)">
+            @click="set_reply_mode(comment)">
               <span class="icon is-small">
                 <i class="fa fa-reply" aria-hidden="true"></i>
               </span>
               <!-- replies count -->
-              <span class="ml-1">{{comment.replies}}</span>
-              <!-- might cause problems -->
+              <span class="ml-1">{{comment.reply_count}}</span>
             </a>
             
             <!-- report comment button -->
@@ -315,6 +413,9 @@
   let add_story_url       = "[[=XML(add_story_url)]]";
   let add_comment_url     = "[[=XML(add_comment_url)]]";
   let get_comments_url    = "[[=XML(get_comments_url)]]";
+
+  let add_reply_url       = "[[=XML(add_reply_url)]]";
+  let get_replies_url     = "[[=XML(get_replies_url)]]";
 
   let report_story_url    = "[[=XML(report_story_url)]]";
   let report_comment_url  = "[[=XML(report_comment_url)]]";

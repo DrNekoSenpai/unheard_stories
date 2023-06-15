@@ -22,21 +22,27 @@ def index():
     return dict(
         url_signer          =url_signer,
         
+        # get/set for stories and comments
         get_feed_url        =URL('get_feed',        signer=url_signer),
         get_comments_url    =URL('get_comments',    signer=url_signer),
         add_story_url       =URL('add_story',       signer=url_signer),
         add_comment_url     =URL('add_comment',     signer=url_signer),
 
+        add_reply_url       =URL('add_reply',       signer=url_signer),
+        get_replies_url     =URL('get_replies',     signer=url_signer),
+
+        # report functions
         report_story_url    =URL('report_story',    signer=url_signer),
         report_comment_url  =URL('report_comment',  signer=url_signer),
+
+        # mod misc
         get_ismod_url       =URL('get_ismod',       signer=url_signer),
         get_rfeed_url       =URL('get_rfeed',       signer=url_signer),
         get_rcomments_url   =URL('get_rcomments',   signer=url_signer),
         
+        # mod actions
         approve_story_url   =URL('approve_story',   signer=url_signer),
         approve_comment_url =URL('approve_comment', signer=url_signer),
-
-        #TODO functions
         delete_story_url    =URL('delete_story',    signer=url_signer),
         delete_comment_url  =URL('delete_comment',  signer=url_signer),
     )
@@ -78,6 +84,34 @@ def add_comment():
     db(db.story.story_id == story_id).update(num_comments=num_comments)
     return "ok"
 
+@action("add_reply", method="POST")
+@action.uses(db, auth.user, url_signer)
+def add_reply():
+    content     = request.json.get('content')
+    parent_id   = request.json.get('parent_id')
+    story_id    = request.json.get('story_id')
+    reply_count = request.json.get('reply_count')
+
+    db.comment.insert(
+        story_id        = story_id,
+        parent_id       = parent_id,
+        reply_count     = 0,
+
+        author          = auth.current_user.get('username'),
+        content         = content,
+        creation_date   = datetime.datetime.utcnow(),
+    )
+
+    db(db.comment.comment_id == parent_id).update(reply_count=reply_count + 1)
+
+    return "ok"
+
+@action("get_replies", method="POST")
+@action.uses(db, auth.user, url_signer)
+def get_replies():
+    parent_id = request.json.get('parent_id')
+    return dict(replies=db(db.comment.parent_id == parent_id).select().as_list()[::-1])
+
 @action('add_story', method="POST")
 @action.uses(db, auth.user, url_signer)
 def add_story():
@@ -117,24 +151,24 @@ def report_comment():
     comment = db(db.comment.comment_id == comment_id).select().as_list()[0]
     
     # update reported and the reported comment not mod_approved
-    #if (not comment.get('mod_approved')):
-    db(db.story.story_id     == story_id  ).update(reported        =True)
-    db(db.comment.comment_id == comment_id).update(reported_comment=True)
+    if (not comment.get('mod_approved')):
+        db(db.story.story_id     == story_id  ).update(reported        =True)
+        db(db.comment.comment_id == comment_id).update(reported_comment=True)
     return "ok"
 
 @action('get_ismod', method="POST")
 @action.uses(db, auth.user, url_signer)
-def get_reports():
+def get_ismod():
     return dict(ismod=ismod())
 
 @action('get_rfeed', method="POST")
 @action.uses(db, auth.user, url_signer)
-def get_reports():
+def get_rfeed():
     return dict(reports=db(db.story.reported == True).select().as_list())
 
 @action('get_rcomments', method="POST")
 @action.uses(db, auth.user, url_signer)
-def get_reports():
+def get_rcomments():
 
     story_id = request.json.get('story_id')
     comments = db((db.comment.story_id == story_id) & (db.comment.reported_comment == True)).select().as_list()

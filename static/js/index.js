@@ -7,29 +7,31 @@ let init = (app) => {
     app.data = {
 
         // bools for toggling what html to display
-        feed_mode:  true,
-        add_mode:   false,
-        view_mode:  false,
-        mod_view:   false,
+        feed_mode:          true,
+        add_mode:           false,
+        view_mode:          false,
+        popup_mode:         false,
+        reply_mode:         false,
 
-        popup_mode: false,
+        mod_view:           false,
 
         // search variables
-        search:         "",
-        search_results: [],
+        search:             "",
+        search_results:     [],
 
         // list variables
-        feed:           [],
-        comments:       [], 
+        feed:               [],
+        comments:           [],
+        replies:            [],
 
         // tag variables
         // tags:       [],
         // currentTag: "",
 
         // variables for add_story and add_comment variables
-        add_title:    "",
-        add_content:  "",
-        add_author:   "",
+        add_title:          "",
+        add_content:        "",
+        add_author:         "",
 
         // view_story variables
         view_id:            -1,
@@ -40,7 +42,14 @@ let init = (app) => {
         view_date:          "",
         view_likes:         -1,
         view_num_reports:   -1,
-        view_reported_story: false,
+        view_reported_story:false,
+
+        // variables for reply view
+        reply_parent:        -1,
+        reply_author:       "test_author",
+        reply_content:      "test_content",
+        reply_time:         "test_time",
+        reply_count:        -1,
 
         // mod vars
         ismod: false,
@@ -87,7 +96,27 @@ let init = (app) => {
         // togle html view
         app.vue.feed_mode   = false;
         app.vue.add_mode    = false;
+        app.vue.reply_mode  = false;
         app.vue.view_mode   = true;
+    }
+
+    app.set_reply_mode = (comment) => {
+        app.vue.feed_mode       = false;
+        app.vue.view_mode       = false;
+        app.vue.add_mode        = false;
+        
+
+        app.vue.reply_author    = comment.author;
+        app.vue.reply_content   = comment.content;
+        app.vue.reply_time      = comment.time;
+        app.vue.reply_parent    = comment.comment_id;
+        app.vue.reply_count     = comment.reply_count;
+
+        app.get_replies();
+
+        console.log("Reply mode for ", comment.id);
+        console.log("Parrent_id is", comment.id);
+        app.vue.reply_mode = true;
     }
 
     app.view = (_idx) => {
@@ -100,8 +129,8 @@ let init = (app) => {
         app.vue.view_author         = app.vue.feed[_idx].author;
         app.vue.view_date           = app.vue.feed[_idx].creation_date;
         app.vue.view_likes          = app.vue.feed[_idx].likes;
-        app.vue.view_num_reports    = app.vue.feed[_idx].num_reports;
         app.vue.view_reported_story = app.vue.feed[_idx].reported_story;
+        app.vue.reply_count         = app.vue.feed[_idx].reply_count;
 
         // get comment list for viewing
         if (!app.vue.ismod || !app.vue.report_view)
@@ -145,6 +174,30 @@ let init = (app) => {
             app.get_comments() // refresh comments dynamically
         }).catch(() => {console.error("DEAD ADD_COMMENT");})
     };
+
+    app.add_reply = () => {
+        axios.post(add_reply_url, {
+            story_id:       app.vue.view_id,
+            parent_id:      app.vue.reply_parent,
+            reply_count:    app.vue.reply_count,
+            content:        app.vue.add_content,
+        }).then((r) => {
+            app.vue.reply_count = app.vue.reply_count + 1;
+            app.get_replies();
+            app.get_comments();
+
+        }).catch(() => {console.error("DEAD ADD_REPLY");})
+        console.log("replied to ", app.vue.reply_parent);
+    }
+
+    app.get_replies = () => {
+        axios.post(get_replies_url, {
+            parent_id: app.vue.reply_parent,
+        }).then((r) => {
+            console.log("getting replies to", app.vue.reply_parent);
+            app.vue.replies = r.data.replies;
+        }).catch(() => {console.error("DEAD GET_REPLIES");})
+    }
 
     app.like_post = () =>{
 
@@ -297,6 +350,8 @@ let init = (app) => {
         set_feed_mode:      app.set_feed_mode,
         set_add_mode:       app.set_add_mode,
         set_view_mode:      app.set_view_mode,
+        set_reply_mode:     app.set_reply_mode,
+
         reset_search:       app.reset_search,
 
         // story functions
@@ -310,6 +365,8 @@ let init = (app) => {
         add_comment:        app.add_comment,
         get_comments:       app.get_comments, // gets a list of comments
 
+        add_reply:          app.add_reply,
+        get_replies:        app.get_replies,
 
         // mod/admin regulation functions
         report_story:       app.report_story,
@@ -319,16 +376,14 @@ let init = (app) => {
         get_rcomments:      app.get_rcomments,
         get_ismod:          app.get_ismod,
 
-        // TODO functions
         approve_story:      app.approve_story,
         approve_comment:    app.approve_comment,
 
         delete_story:       app.delete_story,
         delete_comment:     app.delete_comment,
 
-        // misc
-        open_popup:       app.open_popup,
-        close_popup:      app.close_popup,
+        open_popup:         app.open_popup,
+        close_popup:        app.close_popup,
 
 
     };
